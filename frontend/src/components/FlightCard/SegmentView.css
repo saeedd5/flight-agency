@@ -1,0 +1,212 @@
+/* Modern Segment View */
+.segment-view-modern {
+  width: 100%;
+}
+
+.segment-view-modern.compact {
+  margin-bottom: 8px;
+}
+
+.segment-date-header {
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arrival-date {
+  color: #999;
+  font-size: 10px;
+}
+
+.segment-route-modern {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 0;
+}
+
+/* Airport Boxes */
+.airport-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.airport-time-large {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.plus-day-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: #157f43;
+  background: #e6f7f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1.2;
+}
+
+.airport-code-large {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #157f43;
+  letter-spacing: 0.5px;
+}
+
+.airport-code-large .flag-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.airport-city-name {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Flight Connector */
+.flight-connector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-width: 140px;
+}
+
+.flight-line {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to right, #157f43, #e5e7eb);
+  min-width: 20px;
+}
+
+.flight-middle-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.flight-number-box {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.airline-code-small {
+  font-size: 11px;
+  font-weight: 700;
+  color: #157f43;
+  letter-spacing: 0.5px;
+}
+
+.flight-number-small {
+  font-size: 11px;
+  color: #666;
+  font-weight: 600;
+}
+
+.equipment-text {
+  font-size: 10px;
+  color: #999;
+  text-align: center;
+}
+
+.duration-text {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* RTL Support */
+[dir="rtl"] .segment-route-modern {
+  direction: rtl;
+}
+
+[dir="rtl"] .flight-line {
+  background: linear-gradient(to left, #157f43, #e5e7eb);
+}
+
+[dir="rtl"] .segment-date-header {
+  flex-direction: row-reverse;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .segment-route-modern {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .flight-connector {
+    width: 100%;
+    padding: 8px 0;
+  }
+
+  .flight-line {
+    min-width: 30px;
+  }
+
+  .airport-box {
+    padding: 8px 0;
+  }
+
+  .airport-time-large {
+    font-size: 20px;
+  }
+
+  .airport-code-large {
+    font-size: 14px;
+  }
+
+  .airport-city-name {
+    font-size: 11px;
+  }
+}
+
+/* Compact Mode */
+.segment-view-modern.compact .segment-route-modern {
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.segment-view-modern.compact .airport-time-large {
+  font-size: 20px;
+}
+
+.segment-view-modern.compact .airport-code-large {
+  font-size: 14px;
+}
+
+.segment-view-modern.compact .airport-city-name {
+  font-size: 11px;
+}
+
+.segment-view-modern.compact .flight-connector {
+  min-width: 120px;
+}

@@ -1,0 +1,93 @@
+.ad-box-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.ad-box {
+  width: 200px;
+  flex-shrink: 0;
+  height: fit-content;
+}
+
+/* تبلیغات کنار نتایج */
+.ad-box-container.ad-box-right {
+  position: relative;
+  align-self: flex-start;
+  overflow: visible;
+}
+
+/* در RTL، تبلیغات راست باید در سمت چپ نتایج باشد */
+[dir="rtl"] .ad-box-container.ad-box-right {
+  order: -1;
+}
+
+[dir="ltr"] .ad-box-container.ad-box-right {
+  order: 0;
+}
+
+/* تبلیغات زیر فیلتر */
+.ad-box-container.ad-box-left {
+  position: relative;
+  margin-top: 0;
+  width: 200px;
+  order: 2; /* مطمئن می‌شویم که زیر فیلتر است */
+  display: flex; /* مطمئن می‌شویم که نمایش داده می‌شود */
+}
+
+.ad-box-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+  padding: 12px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.ad-box-label {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.ad-box-placeholder {
+  width: 100%;
+  height: 600px;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ad-box-placeholder p {
+  margin: 0;
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .ad-box-container {
+    display: none;
+  }
+  
+  .filters-with-ad {
+    width: 100%;
+  }
+  
+  .results-with-ad {
+    flex-direction: column;
+  }
+}

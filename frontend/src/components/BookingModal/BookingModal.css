@@ -1,0 +1,153 @@
+.booking-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.booking-modal .ant-modal-header {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 20px 24px;
+}
+
+.booking-modal .ant-modal-body {
+  padding: 24px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.booking-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.booking-flight-summary {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.flight-summary-header {
+  margin-bottom: 12px;
+}
+
+.flight-route {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.route-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.route-arrow {
+  font-size: 20px;
+  color: #157f43;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.flight-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.price-summary {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price-row.total {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.booking-form {
+  margin-top: 8px;
+}
+
+.booking-form .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.booking-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.confirm-booking-btn {
+  min-width: 140px;
+  height: 44px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* RTL Support */
+[dir="rtl"] .flight-route {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .route-arrow {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .booking-actions {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .price-row {
+  flex-direction: row-reverse;
+}
+
+@media (max-width: 768px) {
+  .booking-modal {
+    width: 95% !important;
+    max-width: 95% !important;
+  }
+
+  .flight-details-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .booking-actions {
+    flex-direction: column;
+  }
+
+  .booking-actions button {
+    width: 100%;
+  }
+
+  [dir="rtl"] .booking-actions {
+    flex-direction: column;
+  }
+}
+
+
+
+
+
+
+

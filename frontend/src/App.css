@@ -1,0 +1,163 @@
+.app-layout {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f8f9fa 0%, #f5f5f5 100%);
+}
+
+.app-content {
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px 32px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.search-form-wrapper {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-form-wrapper .search-bar {
+  max-width: 1200px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container-content {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.filters-with-ad {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.results-with-ad {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.error-container {
+  margin: 0 24px 24px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 24px;
+}
+
+.error-container .ant-alert {
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid #ffccc7;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px 24px;
+  color: #666;
+  background: white;
+  border-radius: 12px;
+  margin: 24px auto;
+  max-width: 1400px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.empty-state-icon {
+  font-size: 72px;
+  margin-bottom: 24px;
+  opacity: 0.6;
+  animation: float 3s ease-in-out infinite;
+}
+
+.empty-state p {
+  font-size: 18px;
+  font-weight: 500;
+  color: #666;
+  margin: 0;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] .container {
+  flex-direction: row-reverse;
+}
+
+[dir="ltr"] .container {
+  flex-direction: row;
+}
+
+/* در RTL، filters-with-ad باید در سمت راست باشد */
+[dir="rtl"] .filters-with-ad {
+  order: 1;
+}
+
+[dir="ltr"] .filters-with-ad {
+  order: 0;
+}
+
+/* در RTL، results-with-ad باید در سمت چپ باشد و ترتیب المان‌ها را معکوس کند تا تبلیغات در سمت چپ باشد */
+[dir="rtl"] .results-with-ad {
+  order: 0;
+  flex-direction: row-reverse;
+}
+
+[dir="ltr"] .results-with-ad {
+  order: 1;
+  flex-direction: row;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 16px 32px;
+  }
+  
+  .filters-with-ad {
+    width: 100%;
+  }
+  
+  .results-with-ad {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  [dir="rtl"] .container,
+  [dir="ltr"] .container {
+    flex-direction: column;
+  }
+  
+  [dir="rtl"] .results-with-ad,
+  [dir="ltr"] .results-with-ad {
+    flex-direction: column;
+  }
+}

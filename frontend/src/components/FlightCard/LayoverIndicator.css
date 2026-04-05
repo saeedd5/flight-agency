@@ -1,0 +1,60 @@
+.layover-indicator {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  padding: 10px 0;
+}
+
+.layover-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d9d9d9, transparent);
+}
+
+.layover-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 15px;
+  flex-shrink: 0;
+}
+
+.layover-icon {
+  color: #faad14;
+  font-size: 16px;
+}
+
+.layover-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.layover-label {
+  font-size: 11px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.layover-time {
+  font-size: 13px;
+  font-weight: 600;
+  color: #faad14;
+}
+
+.layover-airport {
+  font-size: 11px;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .layover-content {
+    padding: 0 10px;
+  }
+  
+  .layover-info {
+    gap: 1px;
+  }
+}
+

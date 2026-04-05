@@ -1,0 +1,35 @@
+.saber-test-container {
+  max-width: 1400px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.saber-test-container .ant-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.saber-test-container pre {
+  direction: ltr;
+  text-align: left;
+  font-family: 'Courier New', monospace;
+}
+
+.saber-test-container .ant-table {
+  margin-top: 20px;
+}
+
+.saber-test-container .ant-card-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .saber-test-container {
+    padding: 10px;
+  }
+  
+  .saber-test-container .ant-card {
+    margin-bottom: 15px;
+  }
+}

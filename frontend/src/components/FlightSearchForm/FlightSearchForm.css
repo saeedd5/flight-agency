@@ -1,0 +1,171 @@
+.search-bar {
+  background: white;
+  padding: 28px 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+  margin: 0 auto 24px;
+  border-radius: 12px;
+  transition: box-shadow 0.3s ease;
+  max-width: 1200px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.search-bar:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* RTL Support */
+[dir="rtl"] .search-form {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .search-bar {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .search-field label {
+  text-align: right;
+  direction: rtl;
+}
+
+/* در RTL، دکمه جستجو باید در سمت چپ باشد */
+[dir="rtl"] .search-button {
+  order: -1;
+}
+
+[dir="ltr"] .search-button {
+  order: 0;
+}
+
+.search-form {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 150px;
+}
+
+.search-field label {
+  display: block;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+}
+
+[dir="ltr"] .search-field label {
+  text-align: left;
+}
+
+/* RTL support for Ant Design components */
+[dir="rtl"] .search-field .ant-input,
+[dir="rtl"] .search-field .ant-picker,
+[dir="rtl"] .search-field .ant-select-selector,
+[dir="rtl"] .search-field .ant-select {
+  text-align: right !important;
+  direction: rtl;
+}
+
+[dir="rtl"] .search-field .ant-input-prefix {
+  right: 11px !important;
+  left: auto !important;
+}
+
+[dir="rtl"] .search-field .ant-picker-input {
+  direction: ltr; /* Date picker should stay LTR for date format */
+}
+
+[dir="ltr"] .search-field .ant-input,
+[dir="ltr"] .search-field .ant-picker,
+[dir="ltr"] .search-field .ant-select-selector,
+[dir="ltr"] .search-field .ant-select {
+  text-align: left;
+  direction: ltr;
+}
+
+/* Select styling for airport codes */
+.search-field .ant-select-selection-item {
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+}
+
+.search-field .ant-select-selector {
+  text-transform: uppercase !important;
+}
+
+.search-field .ant-select-selection-placeholder {
+  text-transform: none;
+  opacity: 0.5;
+}
+
+.search-field .ant-select-dropdown {
+  min-width: 280px;
+}
+
+.search-field .ant-select-item-option-content {
+  text-transform: none;
+}
+
+.search-field .ant-select-selection-search-input {
+  text-transform: uppercase !important;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Ensure text inputs are properly aligned in RTL */
+[dir="rtl"] .search-field input::placeholder {
+  text-align: right;
+}
+
+[dir="ltr"] .search-field input::placeholder {
+  text-align: left;
+}
+
+.search-button {
+  padding: 12px 36px;
+  height: auto;
+  font-size: 16px;
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, #157f43 0%, #0d5d2a 100%);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(21, 127, 67, 0.2);
+  letter-spacing: 0.3px;
+}
+
+.search-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(21, 127, 67, 0.35);
+  background: linear-gradient(135deg, #0d5d2a 0%, #157f43 100%);
+}
+
+.search-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(21, 127, 67, 0.2);
+}
+
+@media (max-width: 1024px) {
+  .search-form {
+    flex-direction: column;
+  }
+
+  .search-field {
+    width: 100%;
+  }
+
+  .search-button {
+    width: 100%;
+  }
+}
+
