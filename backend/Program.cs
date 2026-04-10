@@ -13,6 +13,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using FlightSearch.API.Infrastructure.Providers;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
@@ -72,6 +77,9 @@ builder.Services.AddScoped<RegisterUseCase>();
 // Identity Services
 builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<PasswordHasher>();
+
+
+builder.Services.AddSingleton<ITranslationService, JsonTranslationService>();
 
 // JWT Authentication
 var jwtSecret = builder.Configuration["Jwt:Secret"] ?? "your-super-secret-key-change-in-production-min-32-chars";
@@ -185,6 +193,29 @@ using (var scope = app.Services.CreateScope())
     }
     // ==========================================
 }
+
+
+
+
+
+
+
+// ۳. بعد از var app = builder.Build(); این تنظیمات را قرار دهید:
+var supportedCultures = new[] { "en", "ar-IQ" };
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture("en")
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+// این میدلور هدر Accept-Language را می‌خواند و Culture را تغییر می‌دهد
+app.UseRequestLocalization(localizationOptions);
+
+
+
+
+
+
+
 
 
 

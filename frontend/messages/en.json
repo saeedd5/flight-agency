@@ -1,0 +1,39 @@
+{
+  "HomePage": {
+    "Hero": {
+      "title": "Premium Flight Deals",
+      "subtitle": "Browse exclusive discounted tickets hand-picked by our verified partner agencies."
+    },
+    "Loading": { "findingTickets": "Finding the best agency tickets..." },
+    "Results": {
+      "searchTitle": "Search Results",
+      "featuredTitle": "Today's Featured Deals (ORD ➔ ATL)",
+      "ticketsCount": "Tickets"
+    },
+    "Empty": {
+      "noTicketsFound": "No Agency Tickets Found",
+      "searchedDesc": "No agencies have saved flights for {origin} to {destination} on this date.",
+      "featuredDesc": "No featured tickets available for today yet."
+    },
+    "Features": { "verified": "Verified Agencies", "instant": "Instant Booking", "secure": "Secure Payments" }
+  },
+  "Navbar": {
+    "loginBtn": "LOGIN / SIGN UP",
+    "myBookings": "My Bookings",
+    "myPanel": "My Panel",
+    "adminPanel": "Admin Panel",
+    "logout": "Logout",
+    "tabLogin": "Login",
+    "tabSignup": "Sign Up",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "password": "Password",
+    "accountType": "Account Type:",
+    "roleUser": "Regular User",
+    "roleAgency": "Travel Agency",
+    "submitLogin": "Authenticate",
+    "submitSignup": "Create Account",
+    "langEn": "English",
+    "langAr": "العربية"
+  }
+}

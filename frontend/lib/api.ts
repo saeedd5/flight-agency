@@ -466,3 +466,21 @@ export async function getAgencySoldTickets(): Promise<{ success: boolean; bookin
 
 
 
+
+
+
+
+
+api.interceptors.request.use((config) => {
+  if (!isServer) {
+    const token = localStorage.getItem('token');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    
+    // گرفتن زبان فعلی از کوکی که next-intl میسازد
+    const match = document.cookie.match(new RegExp('(^| )NEXT_LOCALE=([^;]+)'));
+    if (match) {
+      config.headers['Accept-Language'] = match[2]; // مثلا: ar-IQ
+    }
+  }
+  return config;
+});

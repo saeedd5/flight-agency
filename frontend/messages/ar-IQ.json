@@ -1,0 +1,39 @@
+{
+  "HomePage": {
+    "Hero": {
+      "title": "أفضل عروض رحلات الطيران",
+      "subtitle": "تصفح التذاكر المخفضة الحصرية والمختارة بعناية من قبل وكالاتنا المعتمدة."
+    },
+    "Loading": { "findingTickets": "جاري البحث عن أفضل تذاكر الوكالات..." },
+    "Results": {
+      "searchTitle": "نتائج البحث",
+      "featuredTitle": "العروض المميزة لليوم (ORD ➔ ATL)",
+      "ticketsCount": "تذاكر"
+    },
+    "Empty": {
+      "noTicketsFound": "لم يتم العثور على تذاكر وكالات",
+      "searchedDesc": "لم تقم أي وكالة بحفظ رحلات من {origin} إلى {destination} في هذا التاريخ.",
+      "featuredDesc": "لا توجد تذاكر مميزة متاحة لليوم بعد."
+    },
+    "Features": { "verified": "وكالات معتمدة", "instant": "حجز فوري", "secure": "مدفوعات آمنة" }
+  },
+  "Navbar": {
+    "loginBtn": "دخول / تسجيل",
+    "myBookings": "حجوزاتي",
+    "myPanel": "لوحة التحكم",
+    "adminPanel": "لوحة الإدارة",
+    "logout": "تسجيل الخروج",
+    "tabLogin": "دخول",
+    "tabSignup": "حساب جديد",
+    "fullName": "الاسم الكامل",
+    "phone": "رقم الهاتف",
+    "password": "كلمة المرور",
+    "accountType": "نوع الحساب:",
+    "roleUser": "مستخدم عادي",
+    "roleAgency": "وكالة سفر",
+    "submitLogin": "تسجيل الدخول",
+    "submitSignup": "إنشاء حساب",
+    "langEn": "English",
+    "langAr": "العربية"
+  }
+}
