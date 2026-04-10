@@ -19,5 +19,7 @@ public class Setting
     public const string MaintenanceMode = "MaintenanceMode";
     public const string MaxSearchResults = "MaxSearchResults";
     public const string BookingEnabled = "BookingEnabled";
+    public const string FlightMarkupPercentage = "FlightMarkupPercentage";
+
 }
 

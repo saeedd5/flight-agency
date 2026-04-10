@@ -1,3 +1,4 @@
+//Domain/Interfaces/IUserRepository.cs : 
 using FlightSearch.API.Domain.Entities;
 
 namespace FlightSearch.API.Domain.Interfaces;
@@ -9,6 +10,7 @@ public interface IUserRepository
 {
     Task<User?> GetByIdAsync(int id);
     Task<User?> GetByUsernameAsync(string username);
+    Task<User?> GetByPhoneAsync(string phone); // <--- این خط را اضافه کنید
     Task<User?> GetByEmailAsync(string email);
     Task<IEnumerable<User>> GetAllAsync(int page = 1, int pageSize = 10);
     Task<int> GetTotalCountAsync();

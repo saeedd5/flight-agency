@@ -1,3 +1,5 @@
+//backend/Domain/Entities/User.cs
+
 namespace FlightSearch.API.Domain.Entities;
 
 /// <summary>
@@ -7,6 +9,10 @@ public class User
 {
     public int Id { get; set; }
     public string Username { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty; // نام کاربر یا آژانس
+    public string Phone { get; set; } = string.Empty; // شماره تلفن (برای لاگین)
+    public string? ProfileImageUrl { get; set; } 
+
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;

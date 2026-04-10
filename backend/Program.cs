@@ -1,3 +1,4 @@
+//backend/program.cs : 
 using FlightSearch.API.Application.UseCases;
 using FlightSearch.API.Application.UseCases.Auth;
 using FlightSearch.API.Application.UseCases.Admin;
@@ -65,6 +66,8 @@ builder.Services.AddScoped<GetAirlinesUseCase>();
 builder.Services.AddScoped<CreateAirlineUseCase>();
 builder.Services.AddScoped<UpdateAirlineUseCase>();
 builder.Services.AddScoped<DeleteAirlineUseCase>();
+builder.Services.AddScoped<RegisterUseCase>();
+
 
 // Identity Services
 builder.Services.AddScoped<JwtTokenService>();
@@ -116,9 +119,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", policy =>
     {
         policy.WithOrigins(
-                "http://localhost:3000",
-                "http://103.75.197.66:3000",
-                "http://103.75.197.66:3001"
+                "http://187.77.219.229:3001"
               )
               .AllowAnyMethod()
               .AllowAnyHeader()
@@ -136,11 +137,13 @@ if (app.Environment.IsDevelopment())
 }
 
 // Initialize database
+// Initialize database
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.EnsureCreated();
-    
+        // dbContext.Database.Migrate(); 
+
     // Create admin user if it doesn't exist
     var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
     var passwordHasher = scope.ServiceProvider.GetRequiredService<PasswordHasher>();
@@ -148,19 +151,54 @@ using (var scope = app.Services.CreateScope())
     var adminUser = userRepository.GetByUsernameAsync("admin").GetAwaiter().GetResult();
     if (adminUser == null)
     {
-        var admin = new FlightSearch.API.Domain.Entities.User
-        {
-            Username = "admin",
-            Email = "admin@flightsearch.com",
-            PasswordHash = passwordHasher.HashPassword("Admin@123"),
-            IsActive = true,
-            CreatedAt = DateTime.UtcNow
-        };
-        
+                var admin = new FlightSearch.API.Domain.Entities.User
+            {
+                Username = "admin",
+                Phone = "admin", // <--- این خط حیاتی را اضافه کنید
+                Name = "Administrator", // (این هم برای نمایش نام در پنل خوب است)
+                Email = "admin@flightsearch.com",
+                PasswordHash = passwordHasher.HashPassword("Admin@123"),
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+                    
         admin = userRepository.CreateAsync(admin).GetAwaiter().GetResult();
         userRepository.AddToRoleAsync(admin.Id, FlightSearch.API.Domain.Entities.Role.Admin).GetAwaiter().GetResult();
     }
+
+    // ==========================================
+    // کدهای جدید: اضافه کردن درصد سود به دیتابیس
+    // ==========================================
+    var settingRepository = scope.ServiceProvider.GetRequiredService<ISettingRepository>();
+    var markupSetting = settingRepository.GetByKeyAsync(FlightSearch.API.Domain.Entities.Setting.FlightMarkupPercentage).GetAwaiter().GetResult();
+    
+    if (markupSetting == null)
+    {
+        var newSetting = new FlightSearch.API.Domain.Entities.Setting
+        {
+            Key = FlightSearch.API.Domain.Entities.Setting.FlightMarkupPercentage,
+            Value = "10", // مقدار پیش‌فرض: 10 درصد
+            Description = "Flight Markup Percentage",
+            Category = "Pricing"
+        };
+        settingRepository.CreateAsync(newSetting).GetAwaiter().GetResult();
+    }
+    // ==========================================
 }
+
+
+
+
+
+app.UseStaticFiles();
+
+// ساخت پوشه uploads اگر وجود نداشت (این کد از قبل درست بود)
+var uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "uploads");
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+}
+
 
 app.UseCors("AllowAll");
 

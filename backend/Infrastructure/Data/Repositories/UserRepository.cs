@@ -121,5 +121,19 @@ public class UserRepository : IUserRepository
             await _context.SaveChangesAsync();
         }
     }
+
+
+
+    public async Task<User?> GetByPhoneAsync(string phone)
+{
+    return await _context.Users
+        .Include(u => u.UserRoles)
+        .ThenInclude(ur => ur.Role)
+        .FirstOrDefaultAsync(u => u.Phone == phone);
+}
+
+
+
+
 }
 

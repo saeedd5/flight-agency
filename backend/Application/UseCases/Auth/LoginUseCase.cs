@@ -1,11 +1,14 @@
+//backend/Application/UseCases/Auth/LoginUseCase.cs : 
 using FlightSearch.API.Application.DTOs.Auth;
 using FlightSearch.API.Domain.Interfaces;
 using FlightSearch.API.Infrastructure.Identity;
+using Microsoft.Extensions.Logging;
+using System.Linq; // اضافه شد
 
 namespace FlightSearch.API.Application.UseCases.Auth;
 
 /// <summary>
-/// Use case for user login
+/// Use case for user login via Phone Number
 /// </summary>
 public class LoginUseCase
 {
@@ -28,55 +31,68 @@ public class LoginUseCase
 
     public async Task<LoginResponseDto> ExecuteAsync(LoginDto request)
     {
-        try
+         try
         {
-            // Find user by username
-            var user = await _userRepository.GetByUsernameAsync(request.Username);
-            
+            // ۱. ابتدا سعی می‌کنیم کاربر را مستقیماً با متد قدیمی پیدا کنیم (این برای Admin عالی است)
+            var user = await _userRepository.GetByUsernameAsync(request.Phone); // دقت کنید: در کنترلر ما Phone را جایگزین Username کردیم
+
+            // ۲. اگر پیدا نشد (یعنی کاربر عادی/آژانس است)، کل کاربران را می‌گیریم و با تلفن مقایسه می‌کنیم
             if (user == null)
             {
-                _logger.LogWarning("Login failed: User {Username} not found", request.Username);
-                return new LoginResponseDto
-                {
-                    Success = false,
-                    ErrorMessage = "Invalid username or password"
-                };
+                var totalUsers = await _userRepository.GetTotalCountAsync();
+                var allUsers = await _userRepository.GetAllAsync(1, totalUsers > 0 ? totalUsers : 1);
+                
+                // جستجوی دقیق: شماره تلفن با Phone برابر باشد یا با Username (چون ما شماره تلفن را در هر دو فیلد ذخیره می‌کنیم)
+                user = allUsers.FirstOrDefault(u => 
+                    u.Phone == request.Phone || 
+                    u.Username == request.Phone || 
+                    u.Email == request.Phone); 
             }
-
-            // Check if user is active
-            if (!user.IsActive)
+            
+            // ۳. اگر باز هم پیدا نشد، ارور می‌دهیم
+            if (user == null)
             {
-                _logger.LogWarning("Login failed: User {Username} is inactive", request.Username);
+                _logger.LogWarning("Login failed: User with identifier {Phone} not found", request.Phone);
                 return new LoginResponseDto
                 {
                     Success = false,
-                    ErrorMessage = "User account is inactive"
+                    ErrorMessage = "نام کاربری یا رمز عبور اشتباه است" 
                 };
             }
 
-            // Verify password
+
+            // 3. بررسی رمز عبور
             if (!_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
             {
-                _logger.LogWarning("Login failed: Invalid password for user {Username}", request.Username);
+                _logger.LogWarning("Login failed: Invalid password for user {Phone}", request.Phone);
                 return new LoginResponseDto
                 {
                     Success = false,
-                    ErrorMessage = "Invalid username or password"
+                    ErrorMessage = "شماره تلفن یا رمز عبور اشتباه است"
                 };
             }
 
-            // Get user roles
+            if (!user.IsActive)
+            {
+                _logger.LogWarning("Login failed: User {Phone} is inactive", request.Phone);
+                return new LoginResponseDto
+                {
+                    Success = false,
+                    ErrorMessage = "حساب کاربری شما غیرفعال است یا هنوز توسط مدیریت تایید نشده است." // <--- تغییر پیام
+                };
+            }
+
+            // 4. دریافت نقش‌ها و ساخت توکن
             var roles = await _userRepository.GetUserRolesAsync(user.Id);
 
-            // Generate JWT token
             var token = _jwtTokenService.GenerateToken(user, roles);
             var expiresAt = _jwtTokenService.GetTokenExpiration();
 
-            // Update last login time
+            // 5. آپدیت زمان آخرین ورود
             user.LastLoginAt = DateTime.UtcNow;
             await _userRepository.UpdateAsync(user);
 
-            _logger.LogInformation("User {Username} logged in successfully", request.Username);
+            _logger.LogInformation("User {Phone} logged in successfully", request.Phone);
 
             return new LoginResponseDto
             {
@@ -86,21 +102,22 @@ public class LoginUseCase
                 User = new UserInfo
                 {
                     Id = user.Id,
-                    Username = user.Username,
-                    Email = user.Email,
+                    Name = user.Name ?? "", // این فیلد اضافه شد
+                    Phone = user.Phone ?? "", // این فیلد اضافه شد
+                    Username = user.Username ?? "",
+                    Email = user.Email ?? "",
                     Roles = roles.ToList()
                 }
             };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error during login for user {Username}", request.Username);
+            _logger.LogError(ex, "Error during login for phone {Phone}", request.Phone);
             return new LoginResponseDto
             {
                 Success = false,
-                ErrorMessage = "Error during login"
+                ErrorMessage = "خطایی در سیستم رخ داده است. لطفاً مجدداً تلاش کنید."
             };
         }
     }
 }
-

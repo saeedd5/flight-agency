@@ -1,3 +1,6 @@
+//backend/Domain/Entities/ApplicationDbContext.cs
+
+
 using FlightSearch.API.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,21 +23,39 @@ public class ApplicationDbContext : DbContext
     public DbSet<SearchLog> SearchLogs => Set<SearchLog>();
     public DbSet<Setting> Settings => Set<Setting>();
     public DbSet<Airline> Airlines => Set<Airline>();
+    public DbSet<AgencyFlight> AgencyFlights => Set<AgencyFlight>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // User configuration
+        // در داخل متد OnModelCreating ، این بخش را جایگزین کنید:
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.HasIndex(e => e.Username).IsUnique();
-            entity.HasIndex(e => e.Email).IsUnique();
-            entity.Property(e => e.Username).IsRequired().HasMaxLength(50);
-            entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
+            entity.HasIndex(e => e.Phone).IsUnique(); // شماره تلفن باید یکتا باشد
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Phone).IsRequired().HasMaxLength(20);
             entity.Property(e => e.PasswordHash).IsRequired();
         });
+
+
+
+
+
+            // AgencyFlight configuration
+            modelBuilder.Entity<AgencyFlight>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(e => e.Agency)
+                    .WithMany() // یک یوزر میتواند چندین پرواز ذخیره کند
+                    .HasForeignKey(e => e.AgencyId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                entity.Property(e => e.RawFlightData).HasColumnType("TEXT");
+
+            });
+
+
 
         // Role configuration
         modelBuilder.Entity<Role>(entity =>
@@ -118,7 +139,9 @@ public class ApplicationDbContext : DbContext
         // Seed roles
         modelBuilder.Entity<Role>().HasData(
             new Role { Id = 1, Name = Role.Admin, Description = "System administrator" },
-            new Role { Id = 2, Name = Role.UserRole, Description = "Regular user" }
+            new Role { Id = 2, Name = Role.UserRole, Description = "Regular user" },
+            new Role { Id = 3, Name = Role.Agency, Description = "Travel Agency" } // <--- این خط اضافه شد
+
         );
 
         // Note: Admin user is created in Program.cs at runtime with proper password hashing
@@ -129,7 +152,9 @@ public class ApplicationDbContext : DbContext
             new Setting { Id = 2, Key = Setting.DefaultCurrency, Value = "USD", Description = "Default currency", Category = "General" },
             new Setting { Id = 3, Key = Setting.MaintenanceMode, Value = "false", Description = "Maintenance mode", Category = "System" },
             new Setting { Id = 4, Key = Setting.MaxSearchResults, Value = "100", Description = "Maximum search results", Category = "Search" },
-            new Setting { Id = 5, Key = Setting.BookingEnabled, Value = "true", Description = "Booking enabled", Category = "Booking" }
+            new Setting { Id = 5, Key = Setting.BookingEnabled, Value = "true", Description = "Booking enabled", Category = "Booking" },
+            new Setting { Id = 6, Key = Setting.FlightMarkupPercentage, Value = "10", Description = "Flight Markup Percentage (%)", Category = "Pricing" }
+
         );
     }
 }

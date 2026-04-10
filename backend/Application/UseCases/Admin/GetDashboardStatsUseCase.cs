@@ -28,38 +28,37 @@ public class GetDashboardStatsUseCase
 
     public async Task<DashboardStatsDto> ExecuteAsync()
     {
+        var stats = new DashboardStatsDto();
+
         try
         {
-            var stats = new DashboardStatsDto();
+            // User stats (محافظت شده)
+            stats.TotalUsers = await SafeExecuteAsync(() => _userRepository.GetTotalCountAsync(), 0);
+            stats.ActiveUsers = stats.TotalUsers; // موقتاً مساوی کل
 
-            // User stats
-            stats.TotalUsers = await _userRepository.GetTotalCountAsync();
-            // For now, ActiveUsers = TotalUsers (can be improved later with IsActive filter)
-            stats.ActiveUsers = stats.TotalUsers;
-            
-            // Booking stats
-            stats.TotalBookings = await _bookingRepository.GetTotalCountAsync();
-            stats.PendingBookings = await _bookingRepository.GetTotalCountAsync(BookingStatus.Pending);
-            stats.ConfirmedBookings = await _bookingRepository.GetTotalCountAsync(BookingStatus.Confirmed);
-            stats.CancelledBookings = await _bookingRepository.GetTotalCountAsync(BookingStatus.Cancelled);
-            stats.TotalRevenue = await _bookingRepository.GetTotalRevenueAsync();
+            // Booking stats (محافظت شده)
+            stats.TotalBookings = await SafeExecuteAsync(() => _bookingRepository.GetTotalCountAsync(), 0);
+            stats.PendingBookings = await SafeExecuteAsync(() => _bookingRepository.GetTotalCountAsync(BookingStatus.Pending), 0);
+            stats.ConfirmedBookings = await SafeExecuteAsync(() => _bookingRepository.GetTotalCountAsync(BookingStatus.Confirmed), 0);
+            stats.CancelledBookings = await SafeExecuteAsync(() => _bookingRepository.GetTotalCountAsync(BookingStatus.Cancelled), 0);
+            stats.TotalRevenue = await SafeExecuteAsync(() => _bookingRepository.GetTotalRevenueAsync(), 0m);
 
-            // Search stats
-            stats.TotalSearches = await _searchLogRepository.GetTotalCountAsync();
-            stats.TodaySearches = await _searchLogRepository.GetTodayCountAsync();
+            // Search stats (محافظت شده)
+            stats.TotalSearches = await SafeExecuteAsync(() => _searchLogRepository.GetTotalCountAsync(), 0);
+            stats.TodaySearches = await SafeExecuteAsync(() => _searchLogRepository.GetTodayCountAsync(), 0);
 
-            // Recent activities
-            var recentBookings = await _bookingRepository.GetRecentAsync(5);
+            // Recent activities (محافظت شده)
+            var recentBookings = await SafeExecuteAsync(() => _bookingRepository.GetRecentAsync(5), new List<Booking>());
             stats.RecentBookings = recentBookings.Select(MapBookingToDto).ToList();
 
-            var recentSearches = await _searchLogRepository.GetRecentAsync(5);
+            var recentSearches = await SafeExecuteAsync(() => _searchLogRepository.GetRecentAsync(5), new List<SearchLog>());
             stats.RecentSearches = recentSearches.Select(MapSearchLogToDto).ToList();
 
-            // Top routes
-            stats.TopRoutes = await _searchLogRepository.GetTopRoutesAsync(5);
+            // Top routes (محافظت شده)
+            stats.TopRoutes = await SafeExecuteAsync(() => _searchLogRepository.GetTopRoutesAsync(5), new Dictionary<string, int>());
 
-            // Searches by day (last 7 days)
-            var searchesByDate = await _searchLogRepository.GetSearchCountByDateAsync(7);
+            // Searches by day (محافظت شده)
+            var searchesByDate = await SafeExecuteAsync(() => _searchLogRepository.GetSearchCountByDateAsync(7), new Dictionary<DateTime, int>());
             stats.SearchesByDay = searchesByDate
                 .ToDictionary(
                     kvp => kvp.Key.ToString("yyyy-MM-dd"),
@@ -70,8 +69,23 @@ public class GetDashboardStatsUseCase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting dashboard stats");
-            throw;
+            _logger.LogError(ex, "Critical Error getting dashboard stats");
+            // در بدترین حالت، به جای ارور 500، یک شیء خالی (همه چیز صفر) برمی‌گردانیم تا صفحه فرانت‌اند کرش نکند
+            return stats; 
+        }
+    }
+
+    // متد کمکی برای اجرای امن کوئری‌های دیتابیس
+    private async Task<T> SafeExecuteAsync<T>(Func<Task<T>> action, T defaultValue)
+    {
+        try
+        {
+            return await action();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Error in partial dashboard stat query");
+            return defaultValue; // اگر خطایی رخ داد، مقدار صفر/خالی برمی‌گرداند تا کل صفحه خراب نشود
         }
     }
 
@@ -81,7 +95,8 @@ public class GetDashboardStatsUseCase
         {
             Id = booking.Id,
             UserId = booking.UserId,
-            Username = booking.User?.Username,
+            // از آنجایی که ما یوزرنیم را برابر تلفن قرار دادیم، میتوانیم از نام هم استفاده کنیم
+            Username = booking.User?.Name ?? booking.User?.Username, 
             FlightKey = booking.FlightKey,
             PassengerName = booking.PassengerName,
             PassengerEmail = booking.PassengerEmail,
@@ -105,7 +120,7 @@ public class GetDashboardStatsUseCase
         {
             Id = log.Id,
             UserId = log.UserId,
-            Username = log.User?.Username,
+            Username = log.User?.Name ?? log.User?.Username,
             IpAddress = log.IpAddress,
             Origin = log.Origin,
             Destination = log.Destination,
@@ -122,4 +137,3 @@ public class GetDashboardStatsUseCase
         };
     }
 }
-

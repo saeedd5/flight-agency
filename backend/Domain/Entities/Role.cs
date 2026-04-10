@@ -1,3 +1,5 @@
+
+//backend/Domain/Entities/Role.cs
 namespace FlightSearch.API.Domain.Entities;
 
 /// <summary>
@@ -15,5 +17,6 @@ public class Role
     // Constants for role names
     public const string Admin = "Admin";
     public const string UserRole = "User";
+    public const string Agency = "Agency";
 }
 
