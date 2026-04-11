@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, Fragment } from 'react';
-import { useAuth } from '@/app/context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { createUserBooking } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -9,9 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { format } from 'date-fns';
 import { Users, CheckCircle2, Ticket, Loader2, User as UserIcon, Mail, ShieldCheck, ChevronDown, ChevronUp, PlaneTakeoff, ShieldAlert, Clock } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing'; // روتر مخصوص next-intl
 import { FlightSegment } from '@/lib/types';
-
+import { useTranslations } from 'next-intl'; // 🔥 ایمپورت هوک ترجمه
+import Image from 'next/image';
 // توابع کمکی امن
 function safeFormatTime(dateString: any, formatStr: string = 'HH:mm'): string {
   if (!dateString) return '--:--';
@@ -24,6 +25,45 @@ function safeFormatTime(dateString: any, formatStr: string = 'HH:mm'): string {
   }
 }
 
+
+
+// تابع کمکی و امن برای ساخت آدرس عکس آژانس
+// تابع کمکی و امن برای ساخت آدرس عکس (سازگار با Next.js و ASP.NET Core)
+function safeImageUrl(url: string | null | undefined): string {
+  // ۱. بررسی مقادیر خالی یا کلمات اشتباهی که ممکن است از سمت دیتابیس بیاید
+  if (!url || url === 'null' || url === 'undefined' || url.trim() === '') {
+    return '/default-avatar.png'; // این فایل در پوشه frontend/public قرار دارد
+  }
+  
+  // ۲. اگر عکس همین الان آدرس کامل دارد (مثلاً از یک سرور دیگر یا گوگل)
+  if (url.startsWith('http')) {
+    return url;
+  }
+  
+  // ۳. اگر آدرس برای پیش‌نمایش زنده در مرورگر است (blob: یا base64)
+  if (url.startsWith('blob:') || url.startsWith('data:')) {
+    return url;
+  }
+
+  // ۴. اگر آدرس با / شروع شده و مربوط به پوشه uploads بک‌اِند است
+  // مثال: /uploads/profile_8.png -> http://187.77.219.229:5000/uploads/profile_8.png
+  if (url.startsWith('/uploads')) {
+    return `http://187.77.219.229:5000${url}`;
+  }
+  
+  // ۵. اگر آدرس مربوط به خودِ فایل‌های فرانت‌اِند است (مثل عکس پیش‌فرض)
+  if (url.startsWith('/')) {
+    return url;
+  }
+
+  // در نهایت اگر هیچ‌کدام نبود، عکس پیش‌فرض را برگردان
+  return '/default-avatar.png';
+}
+
+
+
+
+
 function formatDuration(minutes: number) {
   if (!minutes) return '0m';
   const h = Math.floor(minutes / 60);
@@ -32,13 +72,13 @@ function formatDuration(minutes: number) {
 }
 
 // کامپوننت نمایش سگمنت‌ها (مسیر پرواز)
-function FlightSegmentsDetail({ segments }: { segments: FlightSegment[] }) {
-  if (!segments || segments.length === 0) return <div className="text-slate-400">No segment data available</div>;
+function FlightSegmentsDetail({ segments, t }: { segments: FlightSegment[], t: any }) {
+  if (!segments || segments.length === 0) return <div className="text-slate-400">{t('noSegmentData')}</div>;
   
   return (
     <div>
       <h4 className="font-black text-slate-800 mb-3 flex items-center gap-2 text-[11px] uppercase tracking-tighter">
-        <PlaneTakeoff className="w-4 h-4 text-emerald-700" /> Flight Path & Details
+        <PlaneTakeoff className="w-4 h-4 text-emerald-700" /> {t('flightPath')}
       </h4>
       <div className="space-y-2">
         {segments.map((segment, index) => {
@@ -70,7 +110,7 @@ function FlightSegmentsDetail({ segments }: { segments: FlightSegment[] }) {
                 <div className="flex items-center gap-2 text-amber-700 my-3 pl-4">
                   <Clock className="w-3 h-3" />
                   <span className="text-[10px] font-bold uppercase">
-                    Layover: {formatDuration(layoverMinutes)} in {segment.destination}
+                    {t('layover', { time: formatDuration(layoverMinutes), city: segment.destination })}
                   </span>
                 </div>
               )}
@@ -85,8 +125,9 @@ function FlightSegmentsDetail({ segments }: { segments: FlightSegment[] }) {
 export function FlightCardbooking({ flight }: { flight: any }) {
   const { user } = useAuth();
   const router = useRouter();
-  
-  const [isExpanded, setIsExpanded] = useState(false); // اضافه شدن حالت کشویی
+  const t = useTranslations('FlightCard'); // 🔥 فراخوانی متون ترجمه
+
+  const [isExpanded, setIsExpanded] = useState(false);
   
   const stops = flight.stops || 0;
   const isDirect = stops === 0;
@@ -100,9 +141,9 @@ export function FlightCardbooking({ flight }: { flight: any }) {
   const [error, setError] = useState('');
 
   const handleBookNowClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // جلوگیری از باز شدن کشو هنگام کلیک روی دکمه رزرو
+    e.stopPropagation(); 
     if (!user) {
-      alert("Please login first to book a ticket.");
+      alert(t('checkout.loginRequired'));
       return;
     }
     setShowModal(true);
@@ -110,7 +151,7 @@ export function FlightCardbooking({ flight }: { flight: any }) {
 
   const handleConfirmBooking = async () => {
     if (!passengerName || !passengerEmail) {
-      setError("Please fill in all details."); return;
+      setError(t('checkout.fillDetails')); return;
     }
     setIsBooking(true);
     setError('');
@@ -124,11 +165,11 @@ export function FlightCardbooking({ flight }: { flight: any }) {
     });
 
     if (res.success) {
-      alert("Ticket Booked Successfully!");
+      alert(t('checkout.success'));
       setShowModal(false);
       router.push('/my-bookings');
     } else {
-      setError(res.errorMessage || "Booking failed.");
+      setError(res.errorMessage || t('checkout.failed'));
     }
     setIsBooking(false);
   };
@@ -139,38 +180,28 @@ export function FlightCardbooking({ flight }: { flight: any }) {
         onClick={() => setIsExpanded(!isExpanded)}
         className={`w-full rounded-none border transition-all duration-200 bg-white overflow-hidden shadow-sm cursor-pointer ${isExpanded ? 'border-emerald-700 ring-1 ring-emerald-700' : 'border-slate-300 hover:border-emerald-500'}`}
       >
-    {/* هدر آژانس همراه با عکس پروفایل */}
         <div className="bg-emerald-50/50 px-3 py-2 border-b border-slate-200 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            {/* تصویر پروفایل آژانس */}
+         {/* تصویر پروفایل آژانس */}
             <div className="w-6 h-6 rounded-none overflow-hidden border border-emerald-200 bg-white flex-shrink-0 relative">
-               <img 
-                 src={
-                   flight.agencyProfileImage 
-                   ? (flight.agencyProfileImage.startsWith('http') ? flight.agencyProfileImage : `http://187.77.219.229:5000${flight.agencyProfileImage}`)
-                   : '/default-avatar.png'
-                 } 
-                 alt={flight.agencyName}
-                 className="w-full h-full object-cover"
-                 onError={(e) => {
-                   // اگر عکس لود نشد (مثلا پاک شده بود)، عکس پیش‌فرض را نشان بده
-                   (e.target as HTMLImageElement).src = '/default-avatar.png';
-                 }}
+               <Image 
+                 src={safeImageUrl(flight.agencyProfileImage)} 
+                 alt={flight.agencyName || 'Agency Logo'}
+                 fill
+                 sizes="24px"
+                 className="object-cover"
                />
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                <span className="text-[9px] font-black uppercase text-emerald-800 tracking-wider">Verified Agency</span>
+                <span className="text-[9px] font-black uppercase text-emerald-800 tracking-wider">{t('verifiedAgency')}</span>
               </div>
-              <span className="text-xs font-black text-slate-800 uppercase leading-none mt-0.5">{flight.agencyName || 'Premium Agency'}</span>
+              <span className="text-xs font-black text-slate-800 uppercase leading-none mt-0.5">{flight.agencyName || t('premiumAgency')}</span>
             </div>
           </div>
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Guaranteed Price</span>
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{t('guaranteedPrice')}</span>
         </div>
-
-
-        
 
         <div className="flex flex-col md:flex-row min-h-[80px]">
           <div className="flex-1 p-3 flex flex-col justify-center">
@@ -183,7 +214,7 @@ export function FlightCardbooking({ flight }: { flight: any }) {
                 </div>
               </div>
               <div className="text-[9px] font-bold text-emerald-700 flex items-center gap-1">
-                <Users className="w-3 h-3" /> Available
+                <Users className="w-3 h-3" /> {t('available')}
               </div>
             </div>
 
@@ -197,7 +228,7 @@ export function FlightCardbooking({ flight }: { flight: any }) {
                 <div className="w-full relative flex items-center justify-center h-2">
                   <div className="absolute w-full h-[1px] bg-slate-300"></div>
                   <div className={`z-10 px-2 py-0 text-[8px] font-bold bg-white border ${isDirect ? 'text-emerald-700 border-emerald-300' : 'text-slate-500 border-slate-300'}`}>
-                    {isDirect ? 'Direct' : `${stops} Stop`}
+                    {isDirect ? t('direct') : t('stop', { count: stops })}
                   </div>
                 </div>
               </div>
@@ -210,33 +241,32 @@ export function FlightCardbooking({ flight }: { flight: any }) {
 
           <div className="w-full md:w-[150px] bg-slate-50 p-3 border-t md:border-t-0 md:border-l border-slate-200 flex flex-row md:flex-col justify-between items-center md:items-end">
             <div className="text-left md:text-right">
-              <div className="text-[9px] font-bold text-slate-400 uppercase">Total Price</div>
+              <div className="text-[9px] font-bold text-slate-400 uppercase">{t('totalPrice')}</div>
               <div className="text-xl font-black text-emerald-900 leading-none mt-1">
                 ${(flight.price || flight.finalPrice || 0).toFixed(2)}
               </div>
             </div>
             <Button onClick={handleBookNowClick} className="rounded-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-8 px-4 text-xs mt-0 md:mt-2 w-full md:w-auto uppercase tracking-wider">
-              <Ticket className="w-3 h-3 mr-1" /> Book Now
+              <Ticket className="w-3 h-3 mr-1" /> {t('bookNow')}
             </Button>
           </div>
         </div>
 
-        {/* --- 🔥 بخش جزئیات سگمنت (مثل کارت اصلی) 🔥 --- */}
         {isExpanded && (
           <div className="bg-slate-50/50 border-t border-slate-200 p-4 grid grid-cols-1 md:grid-cols-2 gap-6 text-xs cursor-default" onClick={(e) => e.stopPropagation()}>
-            <FlightSegmentsDetail segments={flight.segments} />
+            <FlightSegmentsDetail segments={flight.segments} t={t} />
             
             <div>
               <h4 className="font-black text-slate-800 mb-3 flex items-center gap-2 text-[11px] uppercase tracking-tighter">
-                 <ShieldAlert className="w-4 h-4 text-emerald-700" /> Fare Rules & Info
+                 <ShieldAlert className="w-4 h-4 text-emerald-700" /> {t('fareRules')}
               </h4>
               <ul className="space-y-1 text-slate-600 font-medium">
-                 <li className="flex justify-between border-b border-slate-200/50 pb-1"><span>Class:</span> <span className="font-bold text-slate-900">{flight.cabinClass || 'Economy'}</span></li>
-                 <li className="flex justify-between border-b border-slate-200/50 pb-1"><span>Baggage:</span> <span className="font-bold text-slate-900">{flight.baggageAllowance || 'Not specified'}</span></li>
+                 <li className="flex justify-between border-b border-slate-200/50 pb-1"><span>{t('class')}</span> <span className="font-bold text-slate-900">{flight.cabinClass || 'Economy'}</span></li>
+                 <li className="flex justify-between border-b border-slate-200/50 pb-1"><span>{t('baggage')}</span> <span className="font-bold text-slate-900">{flight.baggageAllowance || t('notSpecified')}</span></li>
                  <li className="flex justify-between border-b border-slate-200/50 pb-1">
-                    <span>Refundable:</span> 
+                    <span>{t('refundable')}</span> 
                     <span className={flight.isRefundable ? "text-emerald-700 font-black" : "text-amber-700 font-black"}>
-                       {flight.isRefundable ? "Yes" : "No"}
+                       {flight.isRefundable ? t('yes') : t('no')}
                     </span>
                  </li>
               </ul>
@@ -249,36 +279,35 @@ export function FlightCardbooking({ flight }: { flight: any }) {
         </div>
       </div>
 
-      {/* مودال رزرو (بدون تغییر) */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
         <DialogContent className="rounded-none sm:max-w-[400px] border-emerald-800 p-0 shadow-2xl">
           <DialogHeader className="p-4 border-b border-slate-200 bg-emerald-950 text-white">
             <DialogTitle className="text-sm font-black uppercase tracking-tighter flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" /> Secure Checkout
+              <ShieldCheck className="w-4 h-4 text-emerald-400" /> {t('checkout.title')}
             </DialogTitle>
           </DialogHeader>
           <div className="p-5 space-y-4 bg-white">
             {error && <div className="text-[10px] font-black text-red-600 bg-red-50 p-2 uppercase text-center border border-red-200">{error}</div>}
             <div className="bg-slate-50 border border-slate-200 p-3 text-xs">
                <div className="font-black text-slate-800 uppercase border-b border-slate-200 pb-2 mb-2 flex justify-between">
-                 <span>Flight summary</span>
+                 <span>{t('checkout.summary')}</span>
                  <span className="text-emerald-700">${(flight.price || flight.finalPrice || 0).toFixed(2)}</span>
                </div>
                <div className="text-slate-600 font-bold">{flight.origin} ➔ {flight.destination}</div>
                <div className="text-[10px] text-slate-400 mt-1 uppercase">{safeFormatTime(departureTime, 'dd MMM yyyy, HH:mm')}</div>
             </div>
             <div className="space-y-1">
-              <Label className="text-[10px] font-black uppercase text-slate-500 flex items-center gap-1"><UserIcon className="w-3 h-3"/> Passenger Full Name</Label>
+              <Label className="text-[10px] font-black uppercase text-slate-500 flex items-center gap-1"><UserIcon className="w-3 h-3"/> {t('checkout.passengerName')}</Label>
               <Input value={passengerName} onChange={e => setPassengerName(e.target.value)} className="rounded-none h-10 text-xs font-bold border-slate-300 focus-visible:ring-emerald-700 uppercase" placeholder="JOHN DOE" />
             </div>
             <div className="space-y-1">
-              <Label className="text-[10px] font-black uppercase text-slate-500 flex items-center gap-1"><Mail className="w-3 h-3"/> Email Address for e-Ticket</Label>
+              <Label className="text-[10px] font-black uppercase text-slate-500 flex items-center gap-1"><Mail className="w-3 h-3"/> {t('checkout.passengerEmail')}</Label>
               <Input type="email" value={passengerEmail} onChange={e => setPassengerEmail(e.target.value)} className="rounded-none h-10 text-xs font-bold border-slate-300 focus-visible:ring-emerald-700" placeholder="john@example.com" />
             </div>
           </div>
           <DialogFooter className="p-4 border-t border-slate-200 bg-slate-50">
             <Button onClick={handleConfirmBooking} disabled={isBooking} className="w-full rounded-none bg-emerald-800 hover:bg-emerald-900 text-white h-10 text-xs font-black uppercase tracking-wider">
-              {isBooking ? <Loader2 className="w-4 h-4 animate-spin" /> : <><CheckCircle2 className="w-4 h-4 mr-2" /> Confirm & Pay ${(flight.price || flight.finalPrice || 0).toFixed(2)}</>}
+              {isBooking ? <Loader2 className="w-4 h-4 animate-spin" /> : <><CheckCircle2 className="w-4 h-4 mr-2" /> {t('checkout.confirmBtn', { price: (flight.price || flight.finalPrice || 0).toFixed(2) })}</>}
             </Button>
           </DialogFooter>
         </DialogContent>

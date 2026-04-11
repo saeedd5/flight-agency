@@ -2,9 +2,9 @@
 
 import { Check, ChevronsUpDown, LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { FormControl } from '@/components/ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '../../../components/ui/button';
+import { FormControl } from '../../../components/ui/form';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 
 interface Airport {

@@ -15,15 +15,27 @@ const api = axios.create({ baseURL: apiBaseURL, timeout: 60000 });
 // -----------------------------------------------------
 // 1. Interceptor برای ارسال توکن
 // -----------------------------------------------------
-api.interceptors.request.use((config) => {
-  if (!isServer) {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+// =====================================================
+// اینترسپتور ضدگلوله (مقاوم در برابر مشکلات کانتکست)
+// =====================================================
+api.interceptors.request.use(
+  (config) => {
+    // این کد فقط در مرورگر اجرا می‌شود
+    if (typeof window !== 'undefined') {
+      // مستقیماً توکن را از حافظه مرورگر بخوان
+      const token = localStorage.getItem('token');
+      
+      if (token) {
+        // اگر توکن وجود داشت، آن را به هدر اضافه کن
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
 // -----------------------------------------------------
 // 2. تایپ‌ها و توابع احراز هویت (با roles به صورت آرایه)

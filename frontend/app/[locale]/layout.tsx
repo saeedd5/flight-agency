@@ -2,7 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { AuthProvider } from "./context/AuthContext";
 import MainLayout from "./components/MainLayout";
-import { Navbar } from "@/app/components/Navbar";
+import { Navbar } from "./components/Navbar";
 import "./globals.css";
 
 // فونت‌ها (می‌توانید فونت‌های عربی مثل Cairo یا Tahoma را هم اینجا اضافه کنید)

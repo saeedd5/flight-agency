@@ -1,5 +1,5 @@
-import { FlightCardSkeleton } from "./components/FlightCardSkeleton";
-import { FlightSearchForm } from "./components/FlightSearchForm";
+import { FlightCardSkeleton } from "../components/FlightCardSkeleton";
+import { FlightSearchForm } from "../components/FlightSearchForm";
 
 export default function Loading() {
   return (

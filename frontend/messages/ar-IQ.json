@@ -34,6 +34,115 @@
     "submitLogin": "تسجيل الدخول",
     "submitSignup": "إنشاء حساب",
     "langEn": "English",
-    "langAr": "العربية"
+    "langAr": "العربية",
+    "home": "الرئيسية",
+    "about": "من نحن",
+    "contact": "اتصل بنا",
+      "agencySearch": "بحث الوكالات"
+
+  },
+
+   "AgencySearch": {
+    "authorizedOnly": "للموظفين المصرح لهم فقط",
+    "title": "محرك طيران سابر",
+    "subtitle": "ابحث عن الرحلات الخام من سابر، أضف هامش ربحك، واحفظها لعملائك.",
+    "fetching": "جاري جلب بيانات سابر...",
+    "resultsTitle": "نتائج سابر الخام",
+    "flightsCount": "{count} رحلات",
+    "noFlights": "لم يتم العثور على رحلات خام"
+  },
+
+
+
+  "FlightCard": {
+    "verifiedAgency": "وكالة معتمدة",
+    "premiumAgency": "وكالة مميزة",
+    "guaranteedPrice": "سعر مضمون",
+    "available": "متاح",
+    "direct": "مباشر",
+    "stop": "{count} توقف",
+    "totalPrice": "السعر الإجمالي",
+    "bookNow": "احجز الآن",
+    "flightPath": "مسار وتفاصيل الرحلة",
+    "layover": "توقف: {time} في {city}",
+    "fareRules": "قواعد ومعلومات السعر",
+    "class": "الدرجة:",
+    "baggage": "الأمتعة:",
+    "refundable": "قابل للاسترداد:",
+    "baseFare": "السعر الأساسي:",
+    "tax": "ضريبة ({code}):",
+    "yes": "نعم",
+    "no": "لا",
+    "notSpecified": "غير محدد",
+    "noSegmentData": "لا تتوفر بيانات المسار",
+    "checkout": {
+      "title": "دفع آمن",
+      "summary": "ملخص الرحلة",
+      "passengerName": "الاسم الكامل للمسافر",
+      "passengerEmail": "البريد الإلكتروني للتذكرة",
+      "confirmBtn": "تأكيد ودفع ${price}",
+      "loginRequired": "يرجى تسجيل الدخول أولاً لحجز تذكرة.",
+      "fillDetails": "يرجى تعبئة جميع التفاصيل.",
+      "success": "تم حجز التذكرة بنجاح!",
+      "failed": "فشل الحجز."
+    }
+  },
+
+  "AgencyPanel": {
+    "authenticating": "جاري التحقق من الوكالة...",
+    "title": "لوحة تحكم الوكالة",
+    "subtitle": "إدارة رحلاتك ومبيعاتك",
+    "tabArchive": "أرشيفي",
+    "tabSales": "التذاكر المباعة",
+    "tabSettings": "إعدادات الملف الشخصي",
+    "archiveTitle": "الرحلات المحفوظة",
+    "archiveDesc": "الرحلات التي اخترتها وأضفت عليها هامش ربح.",
+    "noArchivedFlights": "لم يتم حفظ أي رحلات في أرشيفك بعد.",
+    "colRoute": "المسار",
+    "colFlightNo": "رقم الرحلة",
+    "colBasePrice": "السعر الأساسي",
+    "colMarkup": "هامش الربح",
+    "colFinalPrice": "السعر النهائي",
+    "colDateSaved": "تاريخ الحفظ",
+    "salesTitle": "حجوزات العملاء",
+    "salesDesc": "قائمة محدثة بالعملاء الذين اشتروا تذاكرك.",
+    "noSales": "لا توجد مبيعات بعد.",
+    "colBookingID": "رقم الحجز",
+    "colPassenger": "تفاصيل المسافر",
+    "colRouteFlight": "المسار والرحلة",
+    "colPaid": "المبلغ المدفوع",
+    "colDateBooked": "تاريخ الحجز",
+    "settingsTitle": "إعدادات ملف الوكالة",
+    "logoLabel": "شعار الوكالة",
+    "nameLabel": "اسم الوكالة",
+    "emailLabel": "البريد الإلكتروني للتواصل",
+    "saveProfileBtn": "حفظ الملف الشخصي"
+  },
+  "MyBookings": {
+    "title": "تذاكري",
+    "subtitle": "إدارة تذاكر الطيران الخاصة بك",
+    "noTickets": "لم يتم العثور على تذاكر",
+    "noTicketsDesc": "لم تقم بحجز أي رحلات بعد.",
+    "boarding": "صعود الطائرة",
+    "passenger": "المسافر",
+    "status": "الحالة",
+    "confirmed": "مؤكد",
+    "refKey": "الرمز المرجعي للرحلة",
+    "bookedOn": "تم الحجز: {date}"
+  },
+  "SearchForm": {
+    "from": "من",
+    "to": "إلى",
+    "departure": "تاريخ المغادرة",
+    "findTickets": "ابحث عن التذاكر",
+    "search": "بحث",
+    "searching": "جاري البحث...",
+    "findingDeals": "جاري البحث عن أفضل العروض...",
+    "selectDate": "اختر"
   }
+
+
 }
+
+
+

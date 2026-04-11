@@ -2,11 +2,11 @@
 
 'use client';
 import { useState } from 'react';
-import { useAuth } from '@/app/context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 // فرض میکنیم یک API برای آپدیت پروفایل ادمین داریم
 // import { adminUpdateProfile } from '@/lib/api'; 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '../../../../components/ui/button';
+import { Input } from '../../../../components/ui/input';
 
 export function ProfileSettings() {
   const { user } = useAuth();

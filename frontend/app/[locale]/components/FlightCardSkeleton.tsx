@@ -1,6 +1,6 @@
 //frontend/app/components/FlightCardSkeleton.jsx : 
 
-import { Card } from "@/components/ui/card";
+import { Card } from "../../../components/ui/card";
 
 export function FlightCardSkeleton() {
   return (

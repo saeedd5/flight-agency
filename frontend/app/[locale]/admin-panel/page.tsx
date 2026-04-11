@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/app/context/AuthContext';
+import { useAuth } from '../../../app/[locale]/context/AuthContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShieldCheck, Users, CircleDollarSign, UserCog, Loader2 } from 'lucide-react';
 

@@ -34,6 +34,123 @@
     "submitLogin": "Authenticate",
     "submitSignup": "Create Account",
     "langEn": "English",
-    "langAr": "العربية"
+    "langAr": "العربية",
+    "home": "Home",
+    "about": "About Us",
+    "agencySearch": "Agency Search",
+    "contact": "Contact Us"
+  },
+
+  
+  "AgencySearch": {
+    "authorizedOnly": "Authorized Personnel Only",
+    "title": "Sabre Flight Engine",
+    "subtitle": "Search raw flights from Sabre, apply your markup, and save them for your customers.",
+    "fetching": "Fetching Sabre Data...",
+    "resultsTitle": "Raw Sabre Results",
+    "flightsCount": "{count} Flights",
+    "noFlights": "No Raw Flights Found"
+  },
+
+
+  "FlightCard": {
+    "verifiedAgency": "Verified Agency",
+    "premiumAgency": "Premium Agency",
+    "guaranteedPrice": "Guaranteed Price",
+    "available": "Available",
+    "direct": "Direct",
+    "stop": "{count} Stop",
+    "totalPrice": "Total Price",
+    "bookNow": "Book Now",
+    "flightPath": "Flight Path & Details",
+    "layover": "Layover: {time} in {city}",
+    "fareRules": "Fare Rules & Info",
+    "class": "Class:",
+    "baggage": "Baggage:",
+    "refundable": "Refundable:",
+    "baseFare": "Base Fare:",
+    "tax": "Tax ({code}):",
+    "yes": "Yes",
+    "no": "No",
+    "notSpecified": "Not specified",
+    "noSegmentData": "No segment data available",
+    "checkout": {
+      "title": "Secure Checkout",
+      "summary": "Flight summary",
+      "passengerName": "Passenger Full Name",
+      "passengerEmail": "Email Address for e-Ticket",
+      "confirmBtn": "Confirm & Pay ${price}",
+      "loginRequired": "Please login first to book a ticket.",
+      "fillDetails": "Please fill in all details.",
+      "success": "Ticket Booked Successfully!",
+      "failed": "Booking failed."
+    }
+  },
+
+
+
+
+  "AgencyPanel": {
+    "authenticating": "Authenticating Agency...",
+    "title": "Agency Control Panel",
+    "subtitle": "Manage your marked-up flights and sales",
+    "tabArchive": "My Archive",
+    "tabSales": "Sold Tickets",
+    "tabSettings": "Profile Settings",
+    "archiveTitle": "Archived Flights",
+    "archiveDesc": "Flights you have selected and applied markup to.",
+    "noArchivedFlights": "No flights saved in your archive yet.",
+    "colRoute": "Route",
+    "colFlightNo": "Flight No.",
+    "colBasePrice": "Base Price",
+    "colMarkup": "Markup",
+    "colFinalPrice": "Final Price",
+    "colDateSaved": "Date Saved",
+    "salesTitle": "Customer Bookings",
+    "salesDesc": "Real-time list of users who purchased your marked-up tickets.",
+    "noSales": "No sales yet.",
+    "colBookingID": "Booking ID",
+    "colPassenger": "Passenger Details",
+    "colRouteFlight": "Route & Flight",
+    "colPaid": "Total Paid",
+    "colDateBooked": "Date Booked",
+    "settingsTitle": "Agency Profile Settings",
+    "logoLabel": "Agency Logo / Avatar",
+    "nameLabel": "Agency Display Name",
+    "emailLabel": "Contact Email",
+    "saveProfileBtn": "Save Profile"
+  },
+  "MyBookings": {
+    "title": "My Tickets",
+    "subtitle": "Manage your purchased flights",
+    "noTickets": "No Tickets Found",
+    "noTicketsDesc": "You haven't booked any flights yet.",
+    "boarding": "Boarding",
+    "passenger": "Passenger",
+    "status": "Status",
+    "confirmed": "Confirmed",
+    "refKey": "Flight Reference Key",
+    "bookedOn": "Booked: {date}"
+  },
+  "SearchForm": {
+    "from": "From",
+    "to": "To",
+    "departure": "Departure",
+    "findTickets": "Find Tickets",
+    "search": "Search",
+    "searching": "Searching...",
+    "findingDeals": "Finding Best Deals...",
+    "selectDate": "Select"
   }
+
+
 }
+
+
+
+
+  
+
+
+
+

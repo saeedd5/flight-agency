@@ -8,11 +8,12 @@ import { z } from 'zod';
 import { format } from 'date-fns';
 import { CalendarIcon, PlaneTakeoff, PlaneLanding, Search, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '../../../components/ui/button';
+import { Calendar } from '../../../components/ui/calendar';
+import { Form, FormControl, FormField, FormItem } from '../../../components/ui/form';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../components/ui/popover';
 import { AirportSelector } from './AirportSelector';
+import { useTranslations } from 'next-intl'; // 🔥 ایمپورت هوک ترجمه
 
 // از همان لیست فرودگاه‌های فرم اصلی استفاده میکنیم
 const airports = [
@@ -93,6 +94,8 @@ export function FlightSearchFormbooking() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isSearching, setIsSearching] = useState(false);
+    const t = useTranslations('SearchForm'); // 🔥 فراخوانی متون ترجمه
+
 
   useEffect(() => { setIsSearching(false); }, [searchParams]);
 
@@ -126,26 +129,26 @@ export function FlightSearchFormbooking() {
       )}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col md:flex-row w-full max-w-4xl mx-auto -mt-6 bg-white border border-emerald-200 shadow-xl rounded-none overflow-hidden relative">
+        <form onSubmit={form.handleSubmit(onSubmit)} dir="ltr" className="flex flex-col md:flex-row w-full max-w-4xl mx-auto -mt-6 bg-white border border-emerald-200 shadow-xl rounded-none overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-1 bg-emerald-600"></div>
           
           <FormField control={form.control} name="origin" render={({ field }) => (
             <FormItem className="flex-1 border-b md:border-b-0 md:border-r border-slate-200 relative pt-3">
-              <div className="absolute top-1.5 left-3 z-10 text-[9px] font-black text-emerald-800 uppercase">From</div>
+              <div className="absolute top-1.5 left-3 z-10 text-[9px] font-black text-emerald-800 uppercase">{t('from')}</div>
               <AirportSelector field={field} form={form} placeholder="Origin" icon={PlaneTakeoff} airports={airports} />
             </FormItem>
           )}/>
 
           <FormField control={form.control} name="destination" render={({ field }) => (
             <FormItem className="flex-1 border-b md:border-b-0 md:border-r border-slate-200 relative pt-3">
-              <div className="absolute top-1.5 left-3 z-10 text-[9px] font-black text-emerald-800 uppercase">To</div>
+              <div className="absolute top-1.5 left-3 z-10 text-[9px] font-black text-emerald-800 uppercase">{t('to')}</div>
               <AirportSelector field={field} form={form} placeholder="Destination" icon={PlaneLanding} airports={airports} />
             </FormItem>
           )}/>
 
           <FormField control={form.control} name="departureDate" render={({ field }) => (
             <FormItem className="flex-1 relative border-b md:border-b-0 md:border-r border-slate-200 pt-3">
-              <div className="absolute top-1.5 left-3 z-10 text-[9px] font-black text-emerald-800 uppercase">Departure</div>
+              <div className="absolute top-1.5 left-3 z-10 text-[9px] font-black text-emerald-800 uppercase">{t('departure')}</div>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -162,7 +165,7 @@ export function FlightSearchFormbooking() {
           )}/>
 
           <Button type="submit" disabled={isSearching} className="h-14 md:h-auto md:w-40 bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs uppercase tracking-widest rounded-none border-none">
-            {isSearching ? <Loader2 className="animate-spin h-4 w-4" /> : <><Search className="h-4 w-4 mr-2" /> Find Tickets</>}
+            {isSearching ? <Loader2 className="animate-spin h-4 w-4" /> : <><Search className="h-4 w-4 mr-2" /> {t('findTickets')}</>}
           </Button>
         </form>
       </Form>

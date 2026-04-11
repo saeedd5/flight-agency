@@ -9,10 +9,10 @@ import { format } from 'date-fns';
 import { CalendarIcon, PlaneTakeoff, PlaneLanding, Search, Loader2 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '../../../components/ui/button';
+import { Calendar } from '../../../components/ui/calendar';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '../../../components/ui/form';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../components/ui/popover';
 import { AirportSelector } from './AirportSelector';
 
 // دیتا بیس فرودگاه‌ها (میتواند در فایلی مثل lib/constants.ts باشد)
@@ -142,7 +142,7 @@ function onSubmit(values: z.infer<typeof FormSchema>) {
       )}
 
       <Form {...form}>
-        <form 
+        <form  dir="ltr"
           onSubmit={form.handleSubmit(onSubmit)} 
           className="flex flex-col md:flex-row w-full max-w-4xl mx-auto -mt-6 bg-white border border-slate-300 shadow-xl rounded-none overflow-hidden"
         >

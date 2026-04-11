@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, Fragment } from 'react';
-import { useAuth } from '@/app/context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { saveAgencyFlight } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
+import { Button } from '../../../components/ui/button';
+import { Card } from '../../../components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../../components/ui/dialog';
+import { Input } from '../../../components/ui/input';
 import { FlightOption, FlightSegment } from '@/lib/types';
 import { format } from 'date-fns';
 import { Users, ChevronDown, ChevronUp, Percent, Loader2, Save, PlaneTakeoff, ShieldAlert, Clock } from 'lucide-react';

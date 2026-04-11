@@ -4,11 +4,11 @@
 
 import { useEffect, useState } from 'react';
 import { adminGetUsers, adminCreateUser, adminUpdateUser, adminDeleteUser, AdminUser } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '../../../../components/ui/button';
+import { Input } from '../../../..//components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../../..//components/ui/dialog';
 import { Edit, Trash2, Plus, Loader2 } from 'lucide-react';
-import { Label } from '@/components/ui/label';
+import { Label } from '../../../..//components/ui/label';
 
 export function UserManagement() {
   const [users, setUsers] = useState<AdminUser[]>([]);
