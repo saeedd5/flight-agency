@@ -9,11 +9,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { format } from 'date-fns';
 import { Users, CheckCircle2, Ticket, Loader2, User as UserIcon, Mail, ShieldCheck, ChevronDown, ChevronUp, PlaneTakeoff, ShieldAlert, Clock } from 'lucide-react';
-import { useRouter } from '@/i18n/routing'; // روتر مخصوص next-intl
+import { useRouter } from '@/i18n/routing'; 
 import { FlightSegment } from '@/lib/types';
-import { useTranslations } from 'next-intl'; // 🔥 ایمپورت هوک ترجمه
+import { useTranslations } from 'next-intl'; 
 import Image from 'next/image';
-// توابع کمکی امن
+
 function safeFormatTime(dateString: any, formatStr: string = 'HH:mm'): string {
   if (!dateString) return '--:--';
   try {
@@ -27,31 +27,27 @@ function safeFormatTime(dateString: any, formatStr: string = 'HH:mm'): string {
 
 
 
-// تابع کمکی و امن برای ساخت آدرس عکس آژانس
-// تابع کمکی و امن برای ساخت آدرس عکس (سازگار با Next.js و ASP.NET Core)
 function safeImageUrl(url: string | null | undefined): string {
-  // ۱. بررسی مقادیر خالی یا کلمات اشتباهی که ممکن است از سمت دیتابیس بیاید
+
   if (!url || url === 'null' || url === 'undefined' || url.trim() === '') {
-    return '/default-avatar.png'; // این فایل در پوشه frontend/public قرار دارد
+    return '/default-avatar.png'; 
   }
   
-  // ۲. اگر عکس همین الان آدرس کامل دارد (مثلاً از یک سرور دیگر یا گوگل)
+  
   if (url.startsWith('http')) {
     return url;
   }
   
-  // ۳. اگر آدرس برای پیش‌نمایش زنده در مرورگر است (blob: یا base64)
   if (url.startsWith('blob:') || url.startsWith('data:')) {
     return url;
   }
 
-  // ۴. اگر آدرس با / شروع شده و مربوط به پوشه uploads بک‌اِند است
-  // مثال: /uploads/profile_8.png -> http://187.77.219.229:5000/uploads/profile_8.png
+  
   if (url.startsWith('/uploads')) {
     return `http://187.77.219.229:5000${url}`;
   }
   
-  // ۵. اگر آدرس مربوط به خودِ فایل‌های فرانت‌اِند است (مثل عکس پیش‌فرض)
+
   if (url.startsWith('/')) {
     return url;
   }
@@ -315,3 +311,7 @@ export function FlightCardbooking({ flight }: { flight: any }) {
     </>
   );
 }
+
+
+
+

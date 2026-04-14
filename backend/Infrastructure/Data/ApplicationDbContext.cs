@@ -52,6 +52,8 @@ public class ApplicationDbContext : DbContext
                     .HasForeignKey(e => e.AgencyId)
                     .OnDelete(DeleteBehavior.Cascade);
                 entity.Property(e => e.RawFlightData).HasColumnType("TEXT");
+                 entity.HasIndex(e => new { e.Origin, e.Destination, e.DepartureTime });
+
 
             });
 

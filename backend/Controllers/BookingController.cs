@@ -68,7 +68,7 @@ public class CreateUserBookingDto
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize] // تمام کاربران لاگین شده دسترسی دارند
+[Authorize] 
 public class BookingController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -78,7 +78,7 @@ public class BookingController : ControllerBase
         _context = context;
     }
 
-    // ثبت رزرو جدید توسط کاربر
+
     [HttpPost]
     public async Task<IActionResult> CreateBooking([FromBody] CreateUserBookingDto request)
     {
@@ -92,7 +92,7 @@ public class BookingController : ControllerBase
             PassengerName = request.PassengerName,
             PassengerEmail = request.PassengerEmail,
             TotalPrice = request.TotalPrice,
-            Status = BookingStatus.Confirmed, // مستقیماً تایید میشود
+            Status = BookingStatus.Confirmed, 
             BookingDate = DateTime.UtcNow
         };
 
@@ -102,7 +102,7 @@ public class BookingController : ControllerBase
         return Ok(new { success = true, message = "Booking created successfully", bookingId = booking.Id });
     }
 
-    // دریافت لیست رزروهای خود کاربر
+
     [HttpGet("my-bookings")]
     public async Task<IActionResult> GetMyBookings()
     {

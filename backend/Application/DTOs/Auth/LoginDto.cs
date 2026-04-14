@@ -6,7 +6,7 @@
 
 // public class LoginDto
 // {
-//     public string Phone { get; set; } = string.Empty; // تغییر از Username به Phone
+//     public string Phone { get; set; } = string.Empty; 
 //     public string Password { get; set; } = string.Empty;
 // }
 // /// <summary>
@@ -41,8 +41,8 @@
 //backend/Application/DTOs/Auth/LoginDto.cs : 
 // File: backend/Application/DTOs/Auth/LoginDto.cs
 
-using System.Collections.Generic; // این using اضافه شد
-using System.Text.Json.Serialization; // این using حیاتی اضافه شد
+using System.Collections.Generic;
+using System.Text.Json.Serialization; 
 
 namespace FlightSearch.API.Application.DTOs.Auth;
 
@@ -72,8 +72,6 @@ public class RegisterDto
     [JsonPropertyName("password")]
     public string Password { get; set; } = string.Empty;
     
-    // 🔥 این خط مشکل را برای همیشه حل می‌کند 🔥
-    // به C# می‌گوییم که کلید "accountType" از JSON را به این پراپرتی متصل کن
     [JsonPropertyName("accountType")]
     public string AccountType { get; set; } = "User"; // User or Agency
 }

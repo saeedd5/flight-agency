@@ -44,6 +44,7 @@ export interface User {
   id?: number;
   name: string;
   phone: string;
+  username?: string; // 🔥 این خط اضافه شد تا ارور Type error برطرف شود 🔥
   email?: string;
   roles: string[]; // <-- اصلاح شده به صورت آرایه
   profileImageUrl?: string;
@@ -117,12 +118,12 @@ export async function updateProfile(data: { name: string; email: string; profile
 // 3. توابع جستجوی پرواز (بدون تغییر)
 // -----------------------------------------------------
 // 1. اول باید تایپ خروجی را آپدیت کنیم
-export interface FlightSearchResponse {
-  success: boolean;
-  flights: FlightOption[];
-  errorMessage?: string;
-  markupPercentage?: number; // اضافه شد
-}
+// export interface FlightSearchResponse {
+//   success: boolean;
+//   flights: FlightOption[];
+//   errorMessage?: string;
+//   markupPercentage?: number; 
+// }
 
 // 2. تابع جستجو آپدیت می‌شود تا درصد را بگیرد و به پارسر بفرستد
 export async function searchFlightsFromSabre(params: {
@@ -413,28 +414,35 @@ export async function searchAgencyFlights(params: {
   origin: string;
   destination: string;
   date: string;
-}): Promise<{ success: boolean; flights: any[]; errorMessage?: string }> {
+  page?: number;     // 🔥 پارامتر جدید
+  pageSize?: number; // 🔥 پارامتر جدید
+}): Promise<{ success: boolean; flights: any[]; totalCount: number; errorMessage?: string }> {
   try {
-    const response = await api.get(`/flight/agency-tickets?origin=${params.origin}&destination=${params.destination}&date=${params.date}`);
+    const page = params.page || 1;
+    const pageSize = params.pageSize || 10;
     
-    // پارس کردن rawFlightData برای استفاده در کارت‌ها
+    // ارسال صفحه و سایز به بک‌اند
+    const url = `/flight/agency-tickets?origin=${params.origin}&destination=${params.destination}&date=${params.date}&page=${page}&pageSize=${pageSize}&_t=${new Date().getTime()}`;
+    const response = await api.get(url);
+    
     const formattedFlights = response.data.flights.map((f: any) => {
-      const rawData = JSON.parse(f.rawFlightData);
+      const flightData = f.flightData || {};
       return {
-        ...rawData,
+        ...flightData,
         isAgencyTicket: true,
         agencyFlightId: f.id,
         agencyName: f.agencyName,
         agencyProfileImage: f.agencyProfileImage,
-        price: f.finalPrice, // جایگزین کردن قیمت نهایی آژانس
+        price: f.finalPrice, 
         currency: f.currency,
-        key: `agency-${f.id}-${rawData.key}`
+        key: `agency-${f.id}-${flightData.key || 'unknown'}`
       };
     });
 
-    return { success: true, flights: formattedFlights };
+    // حالا totalCount را هم برمی‌گردانیم
+    return { success: true, totalCount: response.data.totalCount, flights: formattedFlights };
   } catch (error: any) {
-    return { success: false, flights: [], errorMessage: error.response?.data?.ErrorMessage || "Failed to fetch agency tickets." };
+    return { success: false, flights: [], totalCount: 0, errorMessage: error.response?.data?.ErrorMessage || "Failed to fetch agency tickets." };
   }
 }
 

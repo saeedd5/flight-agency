@@ -343,7 +343,6 @@ public class SabreInstaFlightsProvider : IFlightSearchProvider
             if (depTime == null) depTime = dep;
             arrTime = arr;
 
-            // استفاده از ToString برای جلوگیری از ارور Number
             var segOrigin = seg.TryGetProperty("DepartureAirport", out var da) && da.TryGetProperty("LocationCode", out var daLoc) ? daLoc.ToString() : "";
             var segDest = seg.TryGetProperty("ArrivalAirport", out var aa) && aa.TryGetProperty("LocationCode", out var aaLoc) ? aaLoc.ToString() : "";
             var carrier = seg.TryGetProperty("MarketingAirline", out var ma) && ma.TryGetProperty("Code", out var maCode) ? maCode.ToString() : "";

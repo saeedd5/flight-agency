@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore; 
 using FlightSearch.API.Infrastructure.Providers;
 using Microsoft.Extensions.Configuration; // این هم برای خواندن کانفیگ لازم است
+using System.Text.Json;
 
 namespace FlightSearch.API.Controllers;
 
@@ -116,58 +117,136 @@ public class FlightController : ControllerBase
 
 
 
-[HttpGet("agency-tickets")]
-    public async Task<IActionResult> SearchAgencyTickets(
+// [HttpGet("agency-tickets")]
+//     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)] // 🔥 این خط کَش را برای این متد غیرفعال می‌کند 🔥
+
+//     public async Task<IActionResult> SearchAgencyTickets(
+//         [FromQuery] string origin, 
+//         [FromQuery] string destination, 
+//         [FromQuery] string date,
+//         [FromServices] Microsoft.EntityFrameworkCore.DbContextOptions<FlightSearch.API.Infrastructure.Data.ApplicationDbContext> dbOptions)
+//     {
+//         try
+//         {
+//             if (!DateTime.TryParse(date, out DateTime depDate))
+//             {
+//                 depDate = DateTime.Today;
+//             }
+
+//             // ۱. تبدیل به حروف بزرگ را قبل از کوئری انجام میدهیم (بسیار مهم برای سرعت)
+//             var upperOrigin = origin?.ToUpper() ?? "";
+//             var upperDest = destination?.ToUpper() ?? "";
+
+//             // ۲. تعیین بازه زمانی دقیق برای جستجو در دیتابیس
+//             var startDate = depDate.Date;
+//             var endDate = startDate.AddDays(1);
+
+//             using var context = new FlightSearch.API.Infrastructure.Data.ApplicationDbContext(dbOptions);
+
+//             // ۳. کوئری کاملاً بهینه (بدون ToUpper داخلی)
+//             // با استفاده از AsNoTracking سرعت خواندن اطلاعات از دیتابیس را بالا میبریم
+//             var flights = await context.AgencyFlights
+//                 .AsNoTracking()
+//                 .Include(f => f.Agency) 
+//                 .Where(f => f.Origin == upperOrigin && 
+//                             f.Destination == upperDest && 
+//                             f.DepartureTime >= startDate && 
+//                             f.DepartureTime < endDate)
+//                 .Select(f => new 
+//                 {
+//                     id = f.Id,
+//                     finalPrice = f.FinalPrice,
+//                     currency = f.Currency,
+//                     agencyName = f.Agency != null ? f.Agency.Name : "آژانس نامشخص",
+//                     agencyProfileImage = f.Agency != null ? f.Agency.ProfileImageUrl : null,
+//                     rawFlightData = f.RawFlightData // این فیلد سنگین فقط برای رکوردهای پیدا شده از دیتابیس خارج میشود
+//                 })
+//                 .ToListAsync();
+
+//             return Ok(new { success = true, flights });
+//         }
+//         catch (Exception ex)
+//         {
+//             _logger.LogError(ex, "Error searching agency tickets");
+//             return StatusCode(500, new { success = false, ErrorMessage = "خطا در دریافت بلیط‌های آژانس" });
+//         }
+//     }
+
+
+
+   [HttpGet("agency-tickets")]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+public async Task<IActionResult> SearchAgencyTickets(
         [FromQuery] string origin, 
         [FromQuery] string destination, 
         [FromQuery] string date,
-        [FromServices] Microsoft.EntityFrameworkCore.DbContextOptions<FlightSearch.API.Infrastructure.Data.ApplicationDbContext> dbOptions)
+        [FromServices] Microsoft.EntityFrameworkCore.DbContextOptions<FlightSearch.API.Infrastructure.Data.ApplicationDbContext> dbOptions,
+        [FromQuery] int page = 1,        
+        [FromQuery] int pageSize = 10)   
     {
         try
         {
-            if (!DateTime.TryParse(date, out DateTime depDate))
-            {
-                depDate = DateTime.Today;
-            }
+            if (!DateTime.TryParse(date, out DateTime depDate)) depDate = DateTime.Today;
 
-            // ۱. تبدیل به حروف بزرگ را قبل از کوئری انجام میدهیم (بسیار مهم برای سرعت)
             var upperOrigin = origin?.ToUpper() ?? "";
             var upperDest = destination?.ToUpper() ?? "";
-
-            // ۲. تعیین بازه زمانی دقیق برای جستجو در دیتابیس
-            var startDate = depDate.Date;
-            var endDate = startDate.AddDays(1);
+            var targetDate = depDate.Date;
+            var nextDate = targetDate.AddDays(1);
 
             using var context = new FlightSearch.API.Infrastructure.Data.ApplicationDbContext(dbOptions);
 
-            // ۳. کوئری کاملاً بهینه (بدون ToUpper داخلی)
-            // با استفاده از AsNoTracking سرعت خواندن اطلاعات از دیتابیس را بالا میبریم
-            var flights = await context.AgencyFlights
+
+            var totalCount = await context.AgencyFlights
+                .Where(f => f.Origin == upperOrigin && f.Destination == upperDest && f.DepartureTime >= targetDate && f.DepartureTime < nextDate)
+                .CountAsync();
+
+
+            var flightsFromDb = await context.AgencyFlights
                 .AsNoTracking()
                 .Include(f => f.Agency) 
-                .Where(f => f.Origin == upperOrigin && 
-                            f.Destination == upperDest && 
-                            f.DepartureTime >= startDate && 
-                            f.DepartureTime < endDate)
+                .Where(f => f.Origin == upperOrigin && f.Destination == upperDest && f.DepartureTime >= targetDate && f.DepartureTime < nextDate)
+                .Skip((page - 1) * pageSize) 
+                .Take(pageSize)              
                 .Select(f => new 
                 {
                     id = f.Id,
                     finalPrice = f.FinalPrice,
                     currency = f.Currency,
-                    agencyName = f.Agency != null ? f.Agency.Name : "آژانس نامشخص",
+                    agencyName = f.Agency != null ? f.Agency.Name : "Premium Agency",
                     agencyProfileImage = f.Agency != null ? f.Agency.ProfileImageUrl : null,
-                    rawFlightData = f.RawFlightData // این فیلد سنگین فقط برای رکوردهای پیدا شده از دیتابیس خارج میشود
+                    rawFlightData = f.RawFlightData 
                 })
                 .ToListAsync();
 
-            return Ok(new { success = true, flights });
+            var formattedFlights = flightsFromDb.Select(f => 
+            {
+                object? parsedData = null;
+                try {
+                    if (!string.IsNullOrEmpty(f.rawFlightData))
+                        parsedData = System.Text.Json.JsonSerializer.Deserialize<object>(f.rawFlightData);
+                } catch { }
+
+                return new {
+                    id = f.id,
+                    finalPrice = f.finalPrice,
+                    currency = f.currency,
+                    agencyName = f.agencyName,
+                    agencyProfileImage = f.agencyProfileImage,
+                    flightData = parsedData
+                };
+            }).ToList();
+
+            return Ok(new { success = true, totalCount = totalCount, flights = formattedFlights });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error searching agency tickets");
-            return StatusCode(500, new { success = false, ErrorMessage = "خطا در دریافت بلیط‌های آژانس" });
+            return StatusCode(500, new { success = false, ErrorMessage = ex.Message });
         }
     }
+
+
+
 
 
 
@@ -188,7 +267,6 @@ public class FlightController : ControllerBase
                 return BadRequest(new { success = false, errorMessage = "Origin and Destination are required." });
             }
 
-            // خواندن درصد مارک‌آپ از دیتابیس (اگر نبود، مقدار صفر در نظر گرفته می‌شود)
             decimal markupPercentage = 0;
             using (var context = new FlightSearch.API.Infrastructure.Data.ApplicationDbContext(dbOptions))
             {
@@ -220,13 +298,11 @@ public class FlightController : ControllerBase
             {
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound || response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
-                    // برگرداندن درصد مارک‌آپ حتی در صورت خالی بودن نتایج
                     return Ok(new { success = true, rawData = "{}", markupPercentage }); 
                 }
                 return StatusCode((int)response.StatusCode, new { success = false, errorMessage = jsonContent });
             }
 
-            // برگرداندن درصد مارک‌آپ همراه با دیتای خام
             return Ok(new { success = true, rawData = jsonContent, markupPercentage });
         }
         catch (Exception ex)

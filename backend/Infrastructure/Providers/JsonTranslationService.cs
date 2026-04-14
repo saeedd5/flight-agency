@@ -22,12 +22,10 @@ public class JsonTranslationService : ITranslationService
 
     public string Translate(string entity, string key, string fallbackValue)
     {
-        // گرفتن زبان فعلی که میدلور از هدر Accept-Language خوانده است
         var currentLang = CultureInfo.CurrentCulture.Name; // e.g., "en" or "ar-IQ"
         
         var cacheKey = $"{entity}_{currentLang}";
 
-        // اگر در کش حافظه نبود، از فایل بخوان
         if (!_cache.ContainsKey(cacheKey))
         {
             var filePath = Path.Combine(_env.ContentRootPath, "Translations", $"{entity}.{currentLang}.json");
@@ -48,12 +46,12 @@ public class JsonTranslationService : ITranslationService
             }
             else
             {
-                // اگر فایل زبان عربی نبود، سعی کن انگلیسی را به عنوان پیش‌فرض بخوانی
+
                 _cache[cacheKey] = new Dictionary<string, string>();
             }
         }
 
-        // برگرداندن ترجمه یا مقدار پیش‌فرض
+
         if (_cache[cacheKey].TryGetValue(key, out var translatedValue))
         {
             return translatedValue;

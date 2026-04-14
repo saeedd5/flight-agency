@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 
 namespace FlightSearch.API.Controllers;
 
-// تعریف DTO خارج از کلاس اصلی برای جلوگیری از تداخل نام
+
 public class SaveAgencyFlightDto
 {
     [JsonPropertyName("flightKey")] public string FlightKey { get; set; } = string.Empty;
@@ -31,7 +31,7 @@ public class AgencyController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
 
-    // سازنده (Constructor) - تنها بخشی که می‌تواند هم‌نام کلاس باشد
+
     public AgencyController(ApplicationDbContext context)
     {
         _context = context;
@@ -111,7 +111,7 @@ public class AgencyController : ControllerBase
 
 
 
-    // ۳. دریافت لیست بلیت‌های فروخته شده این آژانس به کاربران
+
 [HttpGet("bookings")]
     public async Task<IActionResult> GetAgencyBookings()
     {
@@ -120,12 +120,12 @@ public class AgencyController : ControllerBase
             var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!int.TryParse(userIdStr, out int agencyId)) return Unauthorized();
 
-            // ۱. گرفتن پروازهای این آژانس
+
             var agencyFlights = await _context.AgencyFlights
                 .Where(f => f.AgencyId == agencyId)
                 .ToDictionaryAsync(f => f.Id);
 
-            // ۲. گرفتن رزروها (مرتب شده از جدید به قدیم)
+
             var allAgencyBookings = await _context.Bookings
                 .Where(b => b.FlightKey.StartsWith("agency-"))
                 .OrderByDescending(b => b.BookingDate)
@@ -133,11 +133,11 @@ public class AgencyController : ControllerBase
 
             var result = new List<object>();
 
-            // ۳. مپ کردن امن (Safe Mapping)
+
             foreach (var b in allAgencyBookings)
             {
                 var parts = b.FlightKey.Split('-');
-                // ساختار کلید: agency-{id}-sabre-...
+
                 if (parts.Length >= 2 && int.TryParse(parts[1], out int fId))
                 {
                     if (agencyFlights.TryGetValue(fId, out var flight))

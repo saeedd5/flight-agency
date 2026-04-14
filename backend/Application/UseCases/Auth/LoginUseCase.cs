@@ -3,7 +3,7 @@ using FlightSearch.API.Application.DTOs.Auth;
 using FlightSearch.API.Domain.Interfaces;
 using FlightSearch.API.Infrastructure.Identity;
 using Microsoft.Extensions.Logging;
-using System.Linq; // اضافه شد
+using System.Linq; 
 
 namespace FlightSearch.API.Application.UseCases.Auth;
 
@@ -33,23 +33,21 @@ public class LoginUseCase
     {
          try
         {
-            // ۱. ابتدا سعی می‌کنیم کاربر را مستقیماً با متد قدیمی پیدا کنیم (این برای Admin عالی است)
-            var user = await _userRepository.GetByUsernameAsync(request.Phone); // دقت کنید: در کنترلر ما Phone را جایگزین Username کردیم
+            var user = await _userRepository.GetByUsernameAsync(request.Phone); 
 
-            // ۲. اگر پیدا نشد (یعنی کاربر عادی/آژانس است)، کل کاربران را می‌گیریم و با تلفن مقایسه می‌کنیم
             if (user == null)
             {
                 var totalUsers = await _userRepository.GetTotalCountAsync();
                 var allUsers = await _userRepository.GetAllAsync(1, totalUsers > 0 ? totalUsers : 1);
                 
-                // جستجوی دقیق: شماره تلفن با Phone برابر باشد یا با Username (چون ما شماره تلفن را در هر دو فیلد ذخیره می‌کنیم)
+
                 user = allUsers.FirstOrDefault(u => 
                     u.Phone == request.Phone || 
                     u.Username == request.Phone || 
                     u.Email == request.Phone); 
             }
             
-            // ۳. اگر باز هم پیدا نشد، ارور می‌دهیم
+
             if (user == null)
             {
                 _logger.LogWarning("Login failed: User with identifier {Phone} not found", request.Phone);
@@ -61,7 +59,7 @@ public class LoginUseCase
             }
 
 
-            // 3. بررسی رمز عبور
+
             if (!_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
             {
                 _logger.LogWarning("Login failed: Invalid password for user {Phone}", request.Phone);
@@ -82,13 +80,11 @@ public class LoginUseCase
                 };
             }
 
-            // 4. دریافت نقش‌ها و ساخت توکن
             var roles = await _userRepository.GetUserRolesAsync(user.Id);
 
             var token = _jwtTokenService.GenerateToken(user, roles);
             var expiresAt = _jwtTokenService.GetTokenExpiration();
 
-            // 5. آپدیت زمان آخرین ورود
             user.LastLoginAt = DateTime.UtcNow;
             await _userRepository.UpdateAsync(user);
 
@@ -102,8 +98,8 @@ public class LoginUseCase
                 User = new UserInfo
                 {
                     Id = user.Id,
-                    Name = user.Name ?? "", // این فیلد اضافه شد
-                    Phone = user.Phone ?? "", // این فیلد اضافه شد
+                    Name = user.Name ?? "", 
+                    Phone = user.Phone ?? "", 
                     Username = user.Username ?? "",
                     Email = user.Email ?? "",
                     Roles = roles.ToList()

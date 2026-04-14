@@ -332,17 +332,14 @@ public class AuthController : ControllerBase
             var user = await userRepository.GetByIdAsync(userId);
             if (user == null) return NotFound(new { message = "User not found" });
 
-            // ۱. آپدیت متون
             if (!string.IsNullOrEmpty(request.Name)) user.Name = request.Name;
             if (!string.IsNullOrEmpty(request.Email)) user.Email = request.Email;
 
-            // ۲. آپدیت عکس پروفایل
- // ۲. آپدیت عکس پروفایل
+
             if (request.ProfileImageFile != null && request.ProfileImageFile.Length > 0)
             {
                 var fileName = $"profile_{userId}_{Guid.NewGuid()}{Path.GetExtension(request.ProfileImageFile.FileName)}";
                 
-                // 🔥 مسیر ذخیره سازی به پوشه wwwroot بک‌اِند برگشت (روش استاندارد) 🔥
                 var uploadsFolder = Path.Combine(env.ContentRootPath, "wwwroot", "uploads");
 
                 if (!Directory.Exists(uploadsFolder)) 
@@ -354,7 +351,6 @@ public class AuthController : ControllerBase
                     await request.ProfileImageFile.CopyToAsync(stream);
                 }
 
-                // آدرس URL برای ذخیره در دیتابیس (فقط مسیر относительный)
                 user.ProfileImageUrl = $"/uploads/{fileName}";
             }
 

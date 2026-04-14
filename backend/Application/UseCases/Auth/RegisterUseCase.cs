@@ -30,11 +30,9 @@ public async Task<LoginResponseDto> ExecuteAsync(RegisterDto request)
                 return new LoginResponseDto { Success = false, ErrorMessage = "این شماره تلفن قبلاً ثبت شده است." };
             }
 
-            // تشخیص نقش و وضعیت فعال بودن
             bool isAgency = request.AccountType.ToLower() == "agency";
             string roleName = isAgency ? Role.Agency : Role.UserRole;
             
-            // اگر کاربر عادی باشد فعال است، اگر آژانس باشد غیرفعال (نیاز به تایید)
             bool isActive = !isAgency; 
 
             var user = new User
@@ -44,26 +42,23 @@ public async Task<LoginResponseDto> ExecuteAsync(RegisterDto request)
                 Username = request.Phone, 
                 Email = $"{request.Phone}@temp.com", 
                 PasswordHash = _passwordHasher.HashPassword(request.Password),
-                IsActive = isActive, // <--- از متغیر جدید استفاده میکنیم
+                IsActive = isActive, 
                 CreatedAt = DateTime.UtcNow
             };
 
             var createdUser = await _userRepository.CreateAsync(user);
             await _userRepository.AddToRoleAsync(createdUser.Id, roleName);
 
-            // --- منطق جدید برای آژانس ---
             if (isAgency)
             {
-                // برای آژانس توکن نمیسازیم و فقط پیغام موفقیت برمیگردانیم
                 return new LoginResponseDto
                 {
                     Success = true,
-                    Token = null, // توکن ندارد چون نباید لاگین شود
-                    ErrorMessage = "pending_approval" // یک فلگ برای فرانت‌اند
+                    Token = null,
+                    ErrorMessage = "pending_approval" 
                 };
             }
 
-            // --- منطق برای کاربر عادی (مثل قبل) ---
             var roles = new List<string> { roleName };
             var token = _jwtTokenService.GenerateToken(createdUser, roles);
 

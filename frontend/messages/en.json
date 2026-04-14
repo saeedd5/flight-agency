@@ -141,6 +141,76 @@
     "searching": "Searching...",
     "findingDeals": "Finding Best Deals...",
     "selectDate": "Select"
+  },
+
+  "AdminPanel": {
+    "title": "Admin Panel",
+    "subtitle": "System Control & Configuration",
+    "authenticating": "Authenticating...",
+    "tabs": {
+      "users": "User Management",
+      "pricing": "Price Management",
+      "settings": "Profile Settings"
+    }
+  },
+
+  "FlightCardRaw": {
+    "price": "Price",
+    "select": "Select",
+    "available": "Available",
+    "left": "{count} left",
+    "direct": "Direct",
+    "stop": "{count} Stop",
+    "flightPath": "Flight Path & Details",
+    "layover": "Layover: {time} in {city}",
+    "fareBaggage": "Fare & Baggage",
+    "class": "Class:",
+    "baggage": "Baggage:",
+    "refundable": "Refundable:",
+    "baseFare": "Base Fare:",
+    "tax": "Tax ({code}):",
+    "yes": "Yes",
+    "no": "No",
+    "notSpecified": "Not specified",
+    "modal": {
+      "title": "Agency Pricing",
+      "basePrice": "Base Price (incl. admin markup)",
+      "yourMarkup": "Your Markup (%)",
+      "finalPrice": "Final Client Price",
+      "saveBtn": "Save to My Dashboard",
+      "success": "Flight saved successfully!",
+      "error": "Error saving flight."
+    }
+  },
+
+  "AboutUs": {
+    "title": "About Our Agency",
+    "subtitle": "Connecting the world with seamless travel experiences.",
+    "description": "Welcome to FlightAgency, your premier partner in modern travel booking. We bridge the gap between global airline data and local expertise, providing agencies and travelers with real-time access to the best flight deals across the globe. Our platform is powered by industry-leading Sabre technology, ensuring accuracy, speed, and reliability in every search.",
+    "missionTitle": "Our Mission",
+    "missionText": "To empower travel agencies with powerful tools and provide travelers with transparent, competitive pricing.",
+    "reachTitle": "Global Reach",
+    "reachText": "From Baghdad to Atlanta, our network spans over 500 airlines worldwide."
+  },
+
+  "ContactUs": {
+    "title": "Contact Us",
+    "subtitle": "Get in touch with our dedicated support team 24/7.",
+    "getInTouch": "Get In Touch",
+    "description": "Whether you have a question about our Sabre integration, need help with a booking, or want to partner with us, our team is ready to assist you.",
+    "addressTitle": "Headquarters",
+    "addressText": "123 Aviation Blvd, Suite 500\nAtlanta, GA 30320, USA",
+    "phoneTitle": "Direct Support",
+    "phoneText": "+1 (800) 555-0198\nSupport available 24/7",
+    "emailTitle": "Email Inquiries",
+    "emailText": "support@flightagency.com\npartners@flightagency.com",
+    "formTitle": "Send us a Message",
+    "nameLabel": "Full Name",
+    "emailLabel": "Email Address",
+    "subjectLabel": "Subject",
+    "messageLabel": "Your Message",
+    "sendBtn": "Send Message",
+    "sending": "Sending..."
   }
 
 

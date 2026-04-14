@@ -50,4 +50,6 @@ export interface FlightSearchResponse {
   success: boolean;
   flights: FlightOption[];
   errorMessage?: string;
+    markupPercentage?: number; // 🔥 این خط را اضافه کنید 🔥
+
 }

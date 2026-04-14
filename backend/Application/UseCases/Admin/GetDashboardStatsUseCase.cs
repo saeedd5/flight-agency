@@ -32,32 +32,32 @@ public class GetDashboardStatsUseCase
 
         try
         {
-            // User stats (محافظت شده)
+            // User stats 
             stats.TotalUsers = await SafeExecuteAsync(() => _userRepository.GetTotalCountAsync(), 0);
-            stats.ActiveUsers = stats.TotalUsers; // موقتاً مساوی کل
+            stats.ActiveUsers = stats.TotalUsers; 
 
-            // Booking stats (محافظت شده)
+            // Booking stats 
             stats.TotalBookings = await SafeExecuteAsync(() => _bookingRepository.GetTotalCountAsync(), 0);
             stats.PendingBookings = await SafeExecuteAsync(() => _bookingRepository.GetTotalCountAsync(BookingStatus.Pending), 0);
             stats.ConfirmedBookings = await SafeExecuteAsync(() => _bookingRepository.GetTotalCountAsync(BookingStatus.Confirmed), 0);
             stats.CancelledBookings = await SafeExecuteAsync(() => _bookingRepository.GetTotalCountAsync(BookingStatus.Cancelled), 0);
             stats.TotalRevenue = await SafeExecuteAsync(() => _bookingRepository.GetTotalRevenueAsync(), 0m);
 
-            // Search stats (محافظت شده)
+            // Search stats 
             stats.TotalSearches = await SafeExecuteAsync(() => _searchLogRepository.GetTotalCountAsync(), 0);
             stats.TodaySearches = await SafeExecuteAsync(() => _searchLogRepository.GetTodayCountAsync(), 0);
 
-            // Recent activities (محافظت شده)
+            // Recent activities
             var recentBookings = await SafeExecuteAsync(() => _bookingRepository.GetRecentAsync(5), new List<Booking>());
             stats.RecentBookings = recentBookings.Select(MapBookingToDto).ToList();
 
             var recentSearches = await SafeExecuteAsync(() => _searchLogRepository.GetRecentAsync(5), new List<SearchLog>());
             stats.RecentSearches = recentSearches.Select(MapSearchLogToDto).ToList();
 
-            // Top routes (محافظت شده)
+            // Top routes 
             stats.TopRoutes = await SafeExecuteAsync(() => _searchLogRepository.GetTopRoutesAsync(5), new Dictionary<string, int>());
 
-            // Searches by day (محافظت شده)
+            // Searches by day 
             var searchesByDate = await SafeExecuteAsync(() => _searchLogRepository.GetSearchCountByDateAsync(7), new Dictionary<DateTime, int>());
             stats.SearchesByDay = searchesByDate
                 .ToDictionary(
@@ -70,12 +70,12 @@ public class GetDashboardStatsUseCase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Critical Error getting dashboard stats");
-            // در بدترین حالت، به جای ارور 500، یک شیء خالی (همه چیز صفر) برمی‌گردانیم تا صفحه فرانت‌اند کرش نکند
+
             return stats; 
         }
     }
 
-    // متد کمکی برای اجرای امن کوئری‌های دیتابیس
+
     private async Task<T> SafeExecuteAsync<T>(Func<Task<T>> action, T defaultValue)
     {
         try
@@ -85,7 +85,7 @@ public class GetDashboardStatsUseCase
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Error in partial dashboard stat query");
-            return defaultValue; // اگر خطایی رخ داد، مقدار صفر/خالی برمی‌گرداند تا کل صفحه خراب نشود
+            return defaultValue; 
         }
     }
 
@@ -95,7 +95,6 @@ public class GetDashboardStatsUseCase
         {
             Id = booking.Id,
             UserId = booking.UserId,
-            // از آنجایی که ما یوزرنیم را برابر تلفن قرار دادیم، میتوانیم از نام هم استفاده کنیم
             Username = booking.User?.Name ?? booking.User?.Username, 
             FlightKey = booking.FlightKey,
             PassengerName = booking.PassengerName,

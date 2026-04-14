@@ -109,26 +109,21 @@ public class SabreProxyController : ControllerBase
         }
     }
 
-    // --- متدهای کمکی برای اعمال درصد سود روی تمام قیمت‌های جیسون Sabre ---
 
     private async Task<IActionResult> ApplyMarkupAndReturn(string jsonContent)
     {
-        // 1. دریافت درصد از دیتابیس (اگر نبود 0 درصد در نظر می‌گیرد)
         var markupSetting = await _settingRepository.GetByKeyAsync(Setting.FlightMarkupPercentage);
         decimal markupMultiplier = 1.0m;
         
         if (markupSetting != null && decimal.TryParse(markupSetting.Value, out var percentage))
         {
-            markupMultiplier = 1.0m + (percentage / 100m); // مثلا 10 میشه 1.10
-        }
+            markupMultiplier = 1.0m + (percentage / 100m); 
 
         if (markupMultiplier == 1.0m)
         {
-            // اگر سودی تعریف نشده بود، مستقیم جیسون رو برگردون
             return Ok(JsonDocument.Parse(jsonContent).RootElement);
         }
 
-        // 2. تغییر هوشمندانه جیسون
         var jsonNode = JsonNode.Parse(jsonContent);
         TraverseAndApplyMarkup(jsonNode, markupMultiplier);
         
@@ -139,12 +134,10 @@ private void TraverseAndApplyMarkup(JsonNode? node, decimal multiplier)
     {
         if (node is JsonObject obj)
         {
-            // در Sabre همیشه فیلدهای قیمت دارای Amount و CurrencyCode هستند
             if (obj.ContainsKey("Amount") && obj.ContainsKey("CurrencyCode"))
             {
                 var amountToken = obj["Amount"];
                 
-                // اصلاحیه: JsonNode رو به JsonValue کست می‌کنیم تا بتونیم مقدارش رو بخونیم
                 if (amountToken is JsonValue jsonValue)
                 {
                     if (jsonValue.TryGetValue<decimal>(out var numValue))
@@ -158,7 +151,6 @@ private void TraverseAndApplyMarkup(JsonNode? node, decimal multiplier)
                 }
             }
 
-            // ادامه جستجو در لایه‌های تو در تو
             foreach (var kvp in obj.ToArray())
             {
                 TraverseAndApplyMarkup(kvp.Value, multiplier);
